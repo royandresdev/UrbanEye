@@ -49,5 +49,32 @@ const mockReports: ReportItem[] = [
 
 export async function getReports(): Promise<ReportItem[]> {
   await new Promise((resolve) => setTimeout(resolve, 400))
-  return mockReports
+  return [...mockReports]
+}
+
+type UpdateReportStatusInput = {
+  reportId: string
+  status: ReportItem['status']
+}
+
+export async function updateReportStatus({
+  reportId,
+  status,
+}: UpdateReportStatusInput): Promise<ReportItem> {
+  await new Promise((resolve) => setTimeout(resolve, 250))
+
+  const reportIndex = mockReports.findIndex((report) => report.id === reportId)
+
+  if (reportIndex < 0) {
+    throw new Error('Reporte no encontrado')
+  }
+
+  const updatedReport: ReportItem = {
+    ...mockReports[reportIndex],
+    status,
+  }
+
+  mockReports[reportIndex] = updatedReport
+
+  return updatedReport
 }

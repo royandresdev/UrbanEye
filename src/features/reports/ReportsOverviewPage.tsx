@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { CircleMarker, MapContainer, Popup, TileLayer } from 'react-leaflet'
 import { formatDistanceToNow } from 'date-fns'
 import { es } from 'date-fns/locale'
-import { useReports } from './useReports'
+import { useReports, useUpdateReportStatus } from './useReports'
 import type { ReportCategory, ReportStatus } from './reportsTypes'
 
 const categoryLabel: Record<ReportCategory, string> = {
@@ -36,6 +36,7 @@ const statusMarkerColor: Record<ReportStatus, string> = {
 
 export function ReportsOverviewPage() {
   const { data: reports = [], isLoading, isError } = useReports()
+  const updateStatusMutation = useUpdateReportStatus()
 
   const center: [number, number] = reports.length
     ? [reports[0].latitude, reports[0].longitude]
@@ -44,9 +45,11 @@ export function ReportsOverviewPage() {
   return (
     <main className="mx-auto min-h-screen w-full max-w-md px-4 py-6">
       <header className="mb-6">
-        <p className="text-sm text-slate-600">Fase 1 · Paso 3</p>
+        <p className="text-sm text-slate-600">Fase 1 · Paso 4</p>
         <h1 className="text-2xl font-semibold text-slate-900">Reportes urbanos</h1>
-        <p className="mt-2 text-sm text-slate-600">Visualización de incidencias en lista y mapa.</p>
+        <p className="mt-2 text-sm text-slate-600">
+          Visualización de incidencias en lista y mapa con gestión de estado.
+        </p>
       </header>
 
       <section className="mb-4 rounded-xl bg-white p-4 shadow-sm">
@@ -98,6 +101,31 @@ export function ReportsOverviewPage() {
                   </span>
                 </div>
                 <p className="text-sm text-slate-700">{report.description}</p>
+                <div className="mt-3">
+                  <label className="text-xs text-slate-600">
+                    Estado
+                    <select
+                      value={report.status}
+                      onChange={(event) => {
+                        updateStatusMutation.mutate({
+                          reportId: report.id,
+                          status: event.target.value as ReportStatus,
+                        })
+                      }}
+                      disabled={
+                        updateStatusMutation.isPending &&
+                        updateStatusMutation.variables?.reportId === report.id
+                      }
+                      className="mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm focus:border-slate-400 focus:outline-none disabled:opacity-60"
+                    >
+                      {Object.entries(statusLabel).map(([value, label]) => (
+                        <option key={value} value={value}>
+                          {label}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                </div>
                 <div className="mt-2 flex items-center justify-between text-xs text-slate-500">
                   <span>{report.address}</span>
                   <span>{report.votes} votos</span>
