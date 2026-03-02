@@ -196,7 +196,7 @@ VITE_MAP_TILE_URL=
 - Filtros por categoría/estado/distancia.
 - Mejora de UX para autoridades.
 
-### Fase 3 — Escalado
+### Fase 3 — Escalado ✅ COMPLETADA
 - Notificaciones.
 - Métricas de zonas críticas.
 - PWA/offline parcial.
