@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom'
+
 export function HomePage() {
   return (
     <main className="mx-auto min-h-screen w-full max-w-md px-4 py-6">
@@ -12,6 +14,12 @@ export function HomePage() {
           Proyecto inicializado con React + TypeScript + Vite, enfoque mobile first y
           arquitectura preparada para iniciar el módulo de reportes.
         </p>
+        <Link
+          to="/auth"
+          className="mt-4 inline-flex rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white"
+        >
+          Ir al Paso 1: Auth básica
+        </Link>
       </section>
     </main>
   )
