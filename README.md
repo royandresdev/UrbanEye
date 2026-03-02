@@ -185,7 +185,7 @@ VITE_MAP_TILE_URL=
 - Configurar Tailwind, ESLint, Prettier.
 - Definir layout mobile first.
 
-### Fase 1 — MVP funcional
+### Fase 1 — MVP funcional ✅ COMPLETADA
 - Auth básica.
 - Alta de reportes con foto + ubicación.
 - Visualización en mapa/listado.
