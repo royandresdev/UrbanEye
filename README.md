@@ -191,7 +191,7 @@ VITE_MAP_TILE_URL=
 - Visualización en mapa/listado.
 - Estados iniciales del reporte.
 
-### Fase 2 — Comunidad y priorización
+### Fase 2 — Comunidad y priorización ✅ COMPLETADA
 - Votación/priorización ciudadana.
 - Filtros por categoría/estado/distancia.
 - Mejora de UX para autoridades.
@@ -210,17 +210,3 @@ VITE_MAP_TILE_URL=
 - Tiempos de carga optimizados para red móvil.
 - Validaciones en cliente y servidor.
 - Manejo de errores y estados vacíos.
-
----
-
-## 12) Próximo paso sugerido
-
-Crear el proyecto base con:
-- React + TypeScript + Vite
-- Tailwind
-- React Router
-- React Query
-- React Hook Form + Zod
-- ESLint + Prettier
-
-Con eso dejamos lista la plataforma para empezar la primera pantalla mobile: **crear reporte**.
