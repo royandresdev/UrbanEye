@@ -7,6 +7,8 @@ import {
   type CreateReportFormValues,
   createReportSchema,
 } from './reportSchemas'
+import { NotificationCenter } from '../../shared/notifications/NotificationCenter'
+import { useNotifications } from '../../shared/notifications/useNotifications'
 
 const categoryOptions = [
   { value: 'bache', label: 'Bache' },
@@ -17,6 +19,7 @@ const categoryOptions = [
 
 export function NewReportPage() {
   const [geoError, setGeoError] = useState<string | null>(null)
+  const { addNotification } = useNotifications()
   const {
     control,
     register,
@@ -70,13 +73,22 @@ export function NewReportPage() {
 
   const onSubmit = async () => {
     await Promise.resolve()
+
+    addNotification({
+      title: 'Reporte recibido',
+      message: 'Tu incidencia fue registrada y está en estado Nuevo.',
+      level: 'success',
+    })
   }
 
   return (
     <main className="mx-auto min-h-screen w-full max-w-md px-4 py-6">
       <header className="mb-6">
         <p className="text-sm text-slate-600">Fase 1 · Paso 2</p>
-        <h1 className="text-2xl font-semibold text-slate-900">Crear reporte</h1>
+        <div className="flex items-center justify-between gap-3">
+          <h1 className="text-2xl font-semibold text-slate-900">Crear reporte</h1>
+          <NotificationCenter />
+        </div>
         <p className="mt-2 text-sm text-slate-600">
           Registra una incidencia con foto, categoría y ubicación.
         </p>

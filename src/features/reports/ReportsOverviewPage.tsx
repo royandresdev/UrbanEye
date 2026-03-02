@@ -6,6 +6,8 @@ import { formatDistanceToNow } from 'date-fns'
 import { es } from 'date-fns/locale'
 import { useReports, useUpdateReportStatus, useVoteReport } from './useReports'
 import type { ReportCategory, ReportItem, ReportStatus } from './reportsTypes'
+import { NotificationCenter } from '../../shared/notifications/NotificationCenter'
+import { useNotifications } from '../../shared/notifications/useNotifications'
 
 const categoryLabel: Record<ReportCategory, string> = {
   bache: 'Bache',
@@ -89,6 +91,7 @@ export function ReportsOverviewPage() {
   const { data: reports = [], isLoading, isError } = useReports()
   const updateStatusMutation = useUpdateReportStatus()
   const voteReportMutation = useVoteReport()
+  const { addNotification } = useNotifications()
   const [selectedCategory, setSelectedCategory] = useState<'all' | ReportCategory>('all')
   const [selectedStatus, setSelectedStatus] = useState<'all' | ReportStatus>('all')
   const [selectedDistance, setSelectedDistance] = useState<DistanceFilter>('all')
@@ -162,8 +165,11 @@ export function ReportsOverviewPage() {
   return (
     <main className="mx-auto min-h-screen w-full max-w-md px-4 py-6">
       <header className="mb-6">
-        <p className="text-sm text-slate-600">Fase 2 · Paso 3</p>
-        <h1 className="text-2xl font-semibold text-slate-900">Reportes urbanos</h1>
+        <p className="text-sm text-slate-600">Fase 3 · Paso 1</p>
+        <div className="flex items-center justify-between gap-3">
+          <h1 className="text-2xl font-semibold text-slate-900">Reportes urbanos</h1>
+          <NotificationCenter />
+        </div>
         <p className="mt-2 text-sm text-slate-600">
           Vista operativa para autoridades con priorización y gestión rápida.
         </p>
@@ -353,10 +359,28 @@ export function ReportsOverviewPage() {
                     <select
                       value={report.status}
                       onChange={(event) => {
+                        const selectedStatus = event.target.value as ReportStatus
+
                         updateStatusMutation.mutate({
                           reportId: report.id,
-                          status: event.target.value as ReportStatus,
-                        })
+                          status: selectedStatus,
+                        },
+                          {
+                            onSuccess: () => {
+                              addNotification({
+                                title: 'Estado actualizado',
+                                message: `${categoryLabel[report.category]} ahora está en ${statusLabel[selectedStatus]}.`,
+                                level: 'success',
+                              })
+                            },
+                            onError: () => {
+                              addNotification({
+                                title: 'Error al actualizar',
+                                message: 'No fue posible actualizar el estado del reporte.',
+                                level: 'warning',
+                              })
+                            },
+                          })
                       }}
                       disabled={
                         updateStatusMutation.isPending &&
@@ -376,7 +400,18 @@ export function ReportsOverviewPage() {
                     <button
                       type="button"
                       onClick={() => {
-                        updateStatusMutation.mutate({ reportId: report.id, status: 'en_revision' })
+                        updateStatusMutation.mutate(
+                          { reportId: report.id, status: 'en_revision' },
+                          {
+                            onSuccess: () => {
+                              addNotification({
+                                title: 'Reporte tomado',
+                                message: `${categoryLabel[report.category]} pasó a En revisión.`,
+                                level: 'info',
+                              })
+                            },
+                          },
+                        )
                       }}
                       disabled={
                         report.status === 'en_revision' ||
@@ -390,7 +425,18 @@ export function ReportsOverviewPage() {
                     <button
                       type="button"
                       onClick={() => {
-                        updateStatusMutation.mutate({ reportId: report.id, status: 'en_proceso' })
+                        updateStatusMutation.mutate(
+                          { reportId: report.id, status: 'en_proceso' },
+                          {
+                            onSuccess: () => {
+                              addNotification({
+                                title: 'Atención iniciada',
+                                message: `${categoryLabel[report.category]} pasó a En proceso.`,
+                                level: 'info',
+                              })
+                            },
+                          },
+                        )
                       }}
                       disabled={
                         report.status === 'en_proceso' ||
@@ -404,7 +450,18 @@ export function ReportsOverviewPage() {
                     <button
                       type="button"
                       onClick={() => {
-                        updateStatusMutation.mutate({ reportId: report.id, status: 'resuelto' })
+                        updateStatusMutation.mutate(
+                          { reportId: report.id, status: 'resuelto' },
+                          {
+                            onSuccess: () => {
+                              addNotification({
+                                title: 'Reporte resuelto',
+                                message: `${categoryLabel[report.category]} marcado como Resuelto.`,
+                                level: 'success',
+                              })
+                            },
+                          },
+                        )
                       }}
                       disabled={
                         report.status === 'resuelto' ||
@@ -424,7 +481,25 @@ export function ReportsOverviewPage() {
                     <button
                       type="button"
                       onClick={() => {
-                        voteReportMutation.mutate({ reportId: report.id })
+                        voteReportMutation.mutate(
+                          { reportId: report.id },
+                          {
+                            onSuccess: () => {
+                              addNotification({
+                                title: 'Prioridad actualizada',
+                                message: `Se agregó un voto a ${categoryLabel[report.category]}.`,
+                                level: 'success',
+                              })
+                            },
+                            onError: () => {
+                              addNotification({
+                                title: 'Error al votar',
+                                message: 'No fue posible registrar el voto en este momento.',
+                                level: 'warning',
+                              })
+                            },
+                          },
+                        )
                       }}
                       disabled={
                         voteReportMutation.isPending && voteReportMutation.variables?.reportId === report.id
