@@ -253,7 +253,7 @@ export function ReportsOverviewPage() {
   return (
     <main className="mx-auto min-h-screen w-full max-w-md px-4 py-6">
       <header className="mb-6">
-        <p className="text-sm text-slate-600">Fase 3 · Paso 2</p>
+        <p className="text-sm text-slate-600">Fase 3 · Paso 3</p>
         <div className="flex items-center justify-between gap-3">
           <h1 className="text-2xl font-semibold text-slate-900">Reportes urbanos</h1>
           <NotificationCenter />

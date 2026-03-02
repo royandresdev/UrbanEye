@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="UrbanEye maskable icon">
+  <rect width="512" height="512" rx="160" fill="#0f172a" />
+  <circle cx="256" cy="224" r="112" fill="#e2e8f0" />
+  <circle cx="256" cy="224" r="56" fill="#0f172a" />
+  <path d="M96 384c44-38 102-60 160-60s116 22 160 60" fill="none" stroke="#e2e8f0" stroke-width="28"
+    stroke-linecap="round" />
+</svg>
