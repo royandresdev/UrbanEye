@@ -37,6 +37,17 @@ const statusMarkerColor: Record<ReportStatus, string> = {
   resuelto: '#047857',
 }
 
+type ZoneMetrics = {
+  zone: string
+  totalReports: number
+  pendingReports: number
+  inProgressReports: number
+  resolvedReports: number
+  totalVotes: number
+  criticalScore: number
+  topCategory: ReportCategory
+}
+
 type DistanceFilter = 'all' | '1' | '3' | '5'
 
 const distanceLabel: Record<DistanceFilter, string> = {
@@ -133,6 +144,83 @@ export function ReportsOverviewPage() {
     return { pending, inProgress, resolved, highPriority }
   }, [prioritizedReports])
 
+  const criticalZones = useMemo(() => {
+    const zoneMap = new Map<
+      string,
+      {
+        totalReports: number
+        pendingReports: number
+        inProgressReports: number
+        resolvedReports: number
+        totalVotes: number
+        categoryCount: Record<ReportCategory, number>
+      }
+    >()
+
+    for (const report of prioritizedReports) {
+      const currentZone = zoneMap.get(report.address) ?? {
+        totalReports: 0,
+        pendingReports: 0,
+        inProgressReports: 0,
+        resolvedReports: 0,
+        totalVotes: 0,
+        categoryCount: {
+          bache: 0,
+          luminaria: 0,
+          basura: 0,
+          vandalismo: 0,
+        },
+      }
+
+      currentZone.totalReports += 1
+      currentZone.totalVotes += report.votes
+      currentZone.categoryCount[report.category] += 1
+
+      if (report.status === 'resuelto') {
+        currentZone.resolvedReports += 1
+      } else if (report.status === 'en_proceso') {
+        currentZone.inProgressReports += 1
+      } else {
+        currentZone.pendingReports += 1
+      }
+
+      zoneMap.set(report.address, currentZone)
+    }
+
+    const zoneMetrics: ZoneMetrics[] = Array.from(zoneMap.entries()).map(([zone, stats]) => {
+      const topCategory = Object.entries(stats.categoryCount).sort((firstCategory, secondCategory) => {
+        if (secondCategory[1] !== firstCategory[1]) {
+          return secondCategory[1] - firstCategory[1]
+        }
+
+        return firstCategory[0].localeCompare(secondCategory[0])
+      })[0][0] as ReportCategory
+
+      const criticalScore = Number(
+        (stats.pendingReports * 3 + stats.inProgressReports * 2 + stats.totalVotes * 0.2).toFixed(1),
+      )
+
+      return {
+        zone,
+        totalReports: stats.totalReports,
+        pendingReports: stats.pendingReports,
+        inProgressReports: stats.inProgressReports,
+        resolvedReports: stats.resolvedReports,
+        totalVotes: stats.totalVotes,
+        criticalScore,
+        topCategory,
+      }
+    })
+
+    return zoneMetrics.sort((firstZone, secondZone) => {
+      if (secondZone.criticalScore !== firstZone.criticalScore) {
+        return secondZone.criticalScore - firstZone.criticalScore
+      }
+
+      return secondZone.totalReports - firstZone.totalReports
+    })
+  }, [prioritizedReports])
+
   const onUseCurrentLocation = () => {
     setLocationError(null)
 
@@ -165,13 +253,13 @@ export function ReportsOverviewPage() {
   return (
     <main className="mx-auto min-h-screen w-full max-w-md px-4 py-6">
       <header className="mb-6">
-        <p className="text-sm text-slate-600">Fase 3 · Paso 1</p>
+        <p className="text-sm text-slate-600">Fase 3 · Paso 2</p>
         <div className="flex items-center justify-between gap-3">
           <h1 className="text-2xl font-semibold text-slate-900">Reportes urbanos</h1>
           <NotificationCenter />
         </div>
         <p className="mt-2 text-sm text-slate-600">
-          Vista operativa para autoridades con priorización y gestión rápida.
+          Vista operativa con notificaciones y métricas de zonas críticas.
         </p>
       </header>
 
@@ -229,6 +317,40 @@ export function ReportsOverviewPage() {
             Limpiar filtros
           </button>
         </div>
+      </section>
+
+      <section className="mb-4 rounded-xl bg-white p-4 shadow-sm">
+        <h2 className="mb-3 text-base font-medium text-slate-900">Métricas de zonas críticas</h2>
+
+        {criticalZones.length === 0 ? (
+          <p className="text-sm text-slate-600">No hay datos suficientes para calcular métricas.</p>
+        ) : (
+          <ul className="space-y-3">
+            {criticalZones.slice(0, 3).map((zone, index) => (
+              <li key={zone.zone} className="rounded-lg border border-slate-200 p-3">
+                <div className="mb-2 flex items-center justify-between gap-2">
+                  <p className="text-sm font-medium text-slate-900">
+                    #{index + 1} · {zone.zone}
+                  </p>
+                  <span className="rounded-full bg-slate-100 px-2 py-1 text-xs font-medium text-slate-700">
+                    Score {zone.criticalScore}
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2 text-xs text-slate-600">
+                  <p>Reportes: {zone.totalReports}</p>
+                  <p>Votos: {zone.totalVotes}</p>
+                  <p>Pendientes: {zone.pendingReports}</p>
+                  <p>En proceso: {zone.inProgressReports}</p>
+                </div>
+
+                <p className="mt-2 text-xs text-slate-600">
+                  Categoría dominante: <span className="font-medium text-slate-800">{categoryLabel[zone.topCategory]}</span>
+                </p>
+              </li>
+            ))}
+          </ul>
+        )}
       </section>
 
       <section className="mb-4 rounded-xl bg-white p-4 shadow-sm">
