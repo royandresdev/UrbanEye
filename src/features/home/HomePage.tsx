@@ -23,6 +23,12 @@ export function HomePage() {
         >
           Paso 2: Crear reporte
         </Link>
+        <Link
+          to="/reports"
+          className="inline-flex w-full justify-center rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700"
+        >
+          Paso 3: Lista y mapa
+        </Link>
       </section>
     </main>
   )

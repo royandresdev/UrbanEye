@@ -164,6 +164,10 @@ export function NewReportPage() {
       </section>
 
       <p className="mt-4 text-center text-sm text-slate-600">
+        <Link to="/reports" className="font-medium text-slate-900 underline">
+          Ver lista y mapa
+        </Link>
+        <span className="mx-2 text-slate-400">·</span>
         <Link to="/" className="font-medium text-slate-900 underline">
           Volver al inicio
         </Link>
