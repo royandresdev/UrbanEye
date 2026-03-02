@@ -1,9 +1,10 @@
 import 'leaflet/dist/leaflet.css'
+import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { CircleMarker, MapContainer, Popup, TileLayer } from 'react-leaflet'
 import { formatDistanceToNow } from 'date-fns'
 import { es } from 'date-fns/locale'
-import { useReports, useUpdateReportStatus } from './useReports'
+import { useReports, useUpdateReportStatus, useVoteReport } from './useReports'
 import type { ReportCategory, ReportStatus } from './reportsTypes'
 
 const categoryLabel: Record<ReportCategory, string> = {
@@ -37,18 +38,31 @@ const statusMarkerColor: Record<ReportStatus, string> = {
 export function ReportsOverviewPage() {
   const { data: reports = [], isLoading, isError } = useReports()
   const updateStatusMutation = useUpdateReportStatus()
+  const voteReportMutation = useVoteReport()
 
-  const center: [number, number] = reports.length
-    ? [reports[0].latitude, reports[0].longitude]
+  const prioritizedReports = useMemo(
+    () =>
+      [...reports].sort((firstReport, secondReport) => {
+        if (secondReport.votes !== firstReport.votes) {
+          return secondReport.votes - firstReport.votes
+        }
+
+        return new Date(secondReport.createdAt).getTime() - new Date(firstReport.createdAt).getTime()
+      }),
+    [reports],
+  )
+
+  const center: [number, number] = prioritizedReports.length
+    ? [prioritizedReports[0].latitude, prioritizedReports[0].longitude]
     : [19.432608, -99.133209]
 
   return (
     <main className="mx-auto min-h-screen w-full max-w-md px-4 py-6">
       <header className="mb-6">
-        <p className="text-sm text-slate-600">Fase 1 · Paso 4</p>
+        <p className="text-sm text-slate-600">Fase 2 · Paso 1</p>
         <h1 className="text-2xl font-semibold text-slate-900">Reportes urbanos</h1>
         <p className="mt-2 text-sm text-slate-600">
-          Visualización de incidencias en lista y mapa con gestión de estado.
+          Priorización ciudadana por votos, con visualización en lista y mapa.
         </p>
       </header>
 
@@ -65,7 +79,7 @@ export function ReportsOverviewPage() {
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
-            {reports.map((report) => (
+            {prioritizedReports.map((report) => (
               <CircleMarker
                 key={report.id}
                 center={[report.latitude, report.longitude]}
@@ -90,7 +104,7 @@ export function ReportsOverviewPage() {
 
         {!isLoading && !isError ? (
           <ul className="space-y-3">
-            {reports.map((report) => (
+            {prioritizedReports.map((report) => (
               <li key={report.id} className="rounded-lg border border-slate-200 p-3">
                 <div className="mb-2 flex items-center justify-between gap-2">
                   <span className="text-sm font-medium text-slate-900">{categoryLabel[report.category]}</span>
@@ -128,7 +142,21 @@ export function ReportsOverviewPage() {
                 </div>
                 <div className="mt-2 flex items-center justify-between text-xs text-slate-500">
                   <span>{report.address}</span>
-                  <span>{report.votes} votos</span>
+                  <div className="flex items-center gap-2">
+                    <span>{report.votes} votos</span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        voteReportMutation.mutate({ reportId: report.id })
+                      }}
+                      disabled={
+                        voteReportMutation.isPending && voteReportMutation.variables?.reportId === report.id
+                      }
+                      className="rounded-lg border border-slate-300 px-2 py-1 text-xs font-medium text-slate-700 disabled:opacity-60"
+                    >
+                      Me afecta +1
+                    </button>
+                  </div>
                 </div>
                 <p className="mt-1 text-xs text-slate-500">
                   {formatDistanceToNow(new Date(report.createdAt), {

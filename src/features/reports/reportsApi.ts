@@ -78,3 +78,26 @@ export async function updateReportStatus({
 
   return updatedReport
 }
+
+type VoteReportInput = {
+  reportId: string
+}
+
+export async function voteReport({ reportId }: VoteReportInput): Promise<ReportItem> {
+  await new Promise((resolve) => setTimeout(resolve, 200))
+
+  const reportIndex = mockReports.findIndex((report) => report.id === reportId)
+
+  if (reportIndex < 0) {
+    throw new Error('Reporte no encontrado')
+  }
+
+  const updatedReport: ReportItem = {
+    ...mockReports[reportIndex],
+    votes: mockReports[reportIndex].votes + 1,
+  }
+
+  mockReports[reportIndex] = updatedReport
+
+  return updatedReport
+}

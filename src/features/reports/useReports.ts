@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { getReports, updateReportStatus } from './reportsApi'
+import { getReports, updateReportStatus, voteReport } from './reportsApi'
 import type { ReportItem, ReportStatus } from './reportsTypes'
 
 export const reportsQueryKey = ['reports'] as const
@@ -36,6 +36,48 @@ export function useUpdateReportStatus() {
             ? {
                 ...report,
                 status,
+              }
+            : report,
+        )
+      })
+
+      return { previousReports }
+    },
+    onError: (_error, _variables, context) => {
+      if (context?.previousReports) {
+        queryClient.setQueryData(reportsQueryKey, context.previousReports)
+      }
+    },
+    onSettled: async () => {
+      await queryClient.invalidateQueries({ queryKey: reportsQueryKey })
+    },
+  })
+}
+
+type VoteReportInput = {
+  reportId: string
+}
+
+export function useVoteReport() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: voteReport,
+    onMutate: async ({ reportId }: VoteReportInput) => {
+      await queryClient.cancelQueries({ queryKey: reportsQueryKey })
+
+      const previousReports = queryClient.getQueryData<ReportItem[]>(reportsQueryKey)
+
+      queryClient.setQueryData<ReportItem[]>(reportsQueryKey, (currentReports) => {
+        if (!currentReports) {
+          return currentReports
+        }
+
+        return currentReports.map((report) =>
+          report.id === reportId
+            ? {
+                ...report,
+                votes: report.votes + 1,
               }
             : report,
         )
