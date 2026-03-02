@@ -119,6 +119,17 @@ export function ReportsOverviewPage() {
     [prioritizedReports, selectedCategory, selectedStatus, selectedDistance, userLocation],
   )
 
+  const operationalSummary = useMemo(() => {
+    const pending = prioritizedReports.filter(
+      (report) => report.status === 'nuevo' || report.status === 'en_revision',
+    ).length
+    const inProgress = prioritizedReports.filter((report) => report.status === 'en_proceso').length
+    const resolved = prioritizedReports.filter((report) => report.status === 'resuelto').length
+    const highPriority = prioritizedReports.filter((report) => report.votes >= 15).length
+
+    return { pending, inProgress, resolved, highPriority }
+  }, [prioritizedReports])
+
   const onUseCurrentLocation = () => {
     setLocationError(null)
 
@@ -151,12 +162,68 @@ export function ReportsOverviewPage() {
   return (
     <main className="mx-auto min-h-screen w-full max-w-md px-4 py-6">
       <header className="mb-6">
-        <p className="text-sm text-slate-600">Fase 2 · Paso 2</p>
+        <p className="text-sm text-slate-600">Fase 2 · Paso 3</p>
         <h1 className="text-2xl font-semibold text-slate-900">Reportes urbanos</h1>
         <p className="mt-2 text-sm text-slate-600">
-          Priorización ciudadana con filtros por categoría, estado y distancia.
+          Vista operativa para autoridades con priorización y gestión rápida.
         </p>
       </header>
+
+      <section className="mb-4 rounded-xl bg-white p-4 shadow-sm">
+        <h2 className="mb-3 text-base font-medium text-slate-900">Panel operativo</h2>
+        <div className="grid grid-cols-2 gap-2">
+          <article className="rounded-lg border border-slate-200 p-3">
+            <p className="text-xs text-slate-500">Pendientes</p>
+            <p className="mt-1 text-lg font-semibold text-slate-900">{operationalSummary.pending}</p>
+          </article>
+          <article className="rounded-lg border border-slate-200 p-3">
+            <p className="text-xs text-slate-500">En proceso</p>
+            <p className="mt-1 text-lg font-semibold text-slate-900">{operationalSummary.inProgress}</p>
+          </article>
+          <article className="rounded-lg border border-slate-200 p-3">
+            <p className="text-xs text-slate-500">Resueltos</p>
+            <p className="mt-1 text-lg font-semibold text-slate-900">{operationalSummary.resolved}</p>
+          </article>
+          <article className="rounded-lg border border-slate-200 p-3">
+            <p className="text-xs text-slate-500">Alta prioridad (15+)</p>
+            <p className="mt-1 text-lg font-semibold text-slate-900">{operationalSummary.highPriority}</p>
+          </article>
+        </div>
+
+        <div className="mt-3 flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={() => {
+              setSelectedStatus('nuevo')
+              setSelectedDistance('all')
+            }}
+            className="rounded-lg border border-slate-300 px-3 py-2 text-xs font-medium text-slate-700"
+          >
+            Ver nuevos
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setSelectedStatus('en_revision')
+              setSelectedDistance('all')
+            }}
+            className="rounded-lg border border-slate-300 px-3 py-2 text-xs font-medium text-slate-700"
+          >
+            Ver en revisión
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setSelectedCategory('all')
+              setSelectedStatus('all')
+              setSelectedDistance('all')
+            }}
+            className="rounded-lg border border-slate-300 px-3 py-2 text-xs font-medium text-slate-700"
+          >
+            Limpiar filtros
+          </button>
+        </div>
+      </section>
 
       <section className="mb-4 rounded-xl bg-white p-4 shadow-sm">
         <h2 className="mb-3 text-base font-medium text-slate-900">Filtros</h2>
@@ -304,6 +371,51 @@ export function ReportsOverviewPage() {
                       ))}
                     </select>
                   </label>
+
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        updateStatusMutation.mutate({ reportId: report.id, status: 'en_revision' })
+                      }}
+                      disabled={
+                        report.status === 'en_revision' ||
+                        (updateStatusMutation.isPending &&
+                          updateStatusMutation.variables?.reportId === report.id)
+                      }
+                      className="rounded-lg border border-slate-300 px-2 py-1 text-xs font-medium text-slate-700 disabled:opacity-50"
+                    >
+                      Tomar
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        updateStatusMutation.mutate({ reportId: report.id, status: 'en_proceso' })
+                      }}
+                      disabled={
+                        report.status === 'en_proceso' ||
+                        (updateStatusMutation.isPending &&
+                          updateStatusMutation.variables?.reportId === report.id)
+                      }
+                      className="rounded-lg border border-slate-300 px-2 py-1 text-xs font-medium text-slate-700 disabled:opacity-50"
+                    >
+                      Iniciar
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        updateStatusMutation.mutate({ reportId: report.id, status: 'resuelto' })
+                      }}
+                      disabled={
+                        report.status === 'resuelto' ||
+                        (updateStatusMutation.isPending &&
+                          updateStatusMutation.variables?.reportId === report.id)
+                      }
+                      className="rounded-lg border border-slate-300 px-2 py-1 text-xs font-medium text-slate-700 disabled:opacity-50"
+                    >
+                      Resolver
+                    </button>
+                  </div>
                 </div>
                 <div className="mt-2 flex items-center justify-between text-xs text-slate-500">
                   <span>{report.address}</span>
