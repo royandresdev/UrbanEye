@@ -241,6 +241,14 @@ VITE_MAP_TILE_URL=
 - Habilitar sincronización en tiempo real de cambios de estado y votos.
 - Definir políticas RLS para seguridad de acceso por rol (ciudadano/autoridad).
 
+### Fase 5 — Testing y Coverage
+- Definir estrategia de pruebas (unitarias, integración y UI crítica).
+- Implementar tests para módulos clave: auth, reportes, votación y cambios de estado.
+- Configurar reporte de coverage con Vitest.
+- Establecer umbrales mínimos de cobertura (líneas, funciones, ramas y statements).
+- Integrar pruebas y coverage en flujo de CI/CD.
+- Documentar comandos y criterios de calidad de pruebas en el README.
+
 ---
 
 ## 11) Criterios de calidad
