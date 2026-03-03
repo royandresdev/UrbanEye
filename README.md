@@ -241,13 +241,13 @@ VITE_MAP_TILE_URL=
 - Habilitar sincronización en tiempo real de cambios de estado y votos.
 - Definir políticas RLS para seguridad de acceso por rol (ciudadano/autoridad).
 
-### Fase 5 — Testing y Coverage
+### Fase 5 — Testing y Coverage ✅ COMPLETADA
 - Definir estrategia de pruebas (unitarias, integración y UI crítica).
 - Implementar tests para módulos clave: auth, reportes, votación y cambios de estado.
 - Configurar reporte de coverage con Vitest.
 - Establecer umbrales mínimos de cobertura (líneas, funciones, ramas y statements).
-- Integrar pruebas y coverage en flujo de CI/CD. ✅ COMPLETADO (`.github/workflows/ci.yml`)
-- Documentar comandos y criterios de calidad de pruebas en el README.
+- Integrar pruebas y coverage en flujo de CI/CD. (`.github/workflows/ci.yml`)
+- Documentar comandos y criterios de calidad de pruebas en el README. 
 
 ### Fase 5 · Paso 1 — Estrategia de pruebas (definición)
 
@@ -270,6 +270,30 @@ VITE_MAP_TILE_URL=
 - Alcance de módulos críticos definido.
 - Convención de pruebas acordada (`*.test.ts` / `*.test.tsx`).
 - Lista de casos iniciales priorizados para implementación en el Paso 2.
+
+### Fase 5 · Paso 6 — Comandos y criterios de calidad (documentación)
+
+**Comandos de pruebas**
+- `npm run test`: ejecuta toda la suite de pruebas con Vitest.
+- `npm run test:watch`: ejecuta pruebas en modo watch durante desarrollo.
+- `npm run test:coverage`: ejecuta pruebas con coverage y genera reportes en `coverage/`.
+- `npm run lint`: validación estática obligatoria previa a PR.
+
+**Reportes de coverage**
+- Consola: resumen de `% Stmts`, `% Branch`, `% Funcs`, `% Lines`.
+- HTML: abrir `coverage/index.html` para revisar cobertura por archivo.
+
+**Umbrales mínimos definidos (Vitest)**
+- `lines >= 60`
+- `functions >= 60`
+- `statements >= 60`
+- `branches >= 50`
+
+**Criterios de calidad para PR/CI**
+- El pipeline de CI debe pasar en `.github/workflows/ci.yml`.
+- No se aceptan PR con `lint` o `test` fallando.
+- Si `test:coverage` falla por umbral o tests rojos, se corrige antes de merge.
+- Los tests críticos de auth/reportes deben incluir caso feliz y caso de error.
 
 ---
 
