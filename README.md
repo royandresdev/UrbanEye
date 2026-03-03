@@ -233,7 +233,7 @@ VITE_MAP_TILE_URL=
 - Métricas de zonas críticas.
 - PWA/offline parcial.
 
-### Fase 4 — Integración Supabase
+### Fase 4 — Integración Supabase ✅ COMPLETADA
 - Configurar proyecto Supabase y variables de entorno (`VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`).
 - Implementar autenticación real (registro, inicio de sesión y cierre de sesión).
 - Migrar datos mock de reportes a tablas reales (`reports`, `report_votes`, `report_status_history`).
