@@ -74,11 +74,23 @@ export function NewReportPage() {
   }
 
   const onSubmit = async (values: CreateReportFormValues) => {
+    const photoFile = values.photo.item(0)
+
+    if (!photoFile) {
+      addNotification({
+        title: 'Foto requerida',
+        message: 'Selecciona una foto para crear el reporte.',
+        level: 'warning',
+      })
+      return
+    }
+
     await createReportMutation.mutateAsync({
       category: values.category,
       description: values.description,
       latitude: values.latitude,
       longitude: values.longitude,
+      photoFile,
     })
 
     addNotification({

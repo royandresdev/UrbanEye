@@ -183,6 +183,16 @@ VITE_MAP_TILE_URL=
 3. El cliente queda disponible en `src/shared/lib/supabase.ts`.
 4. El helper `src/shared/lib/env.ts` valida que las variables requeridas existan.
 
+### Requisitos para imágenes (Fase 4 · Paso 4)
+
+- Bucket de Storage: `report-images`.
+- Tabla recomendada: `report_images` con columnas mínimas:
+  - `report_id` (uuid),
+  - `user_id` (uuid, opcional),
+  - `storage_path` (text),
+  - `public_url` (text),
+  - `created_at` (timestamptz default now()).
+
 ---
 
 ## 10) Roadmap por fases

@@ -26,6 +26,17 @@ type CreateReportInput = {
   description: string
   latitude: number
   longitude: number
+  photoFile: File
+}
+
+const REPORT_IMAGES_BUCKET = 'report-images'
+
+function sanitizeFileName(fileName: string): string {
+  return fileName
+    .normalize('NFD')
+    .replace(/[^\w.-]+/g, '-')
+    .replace(/-+/g, '-')
+    .toLowerCase()
 }
 
 function buildReportItems(
@@ -104,6 +115,49 @@ export async function createReport(input: CreateReportInput): Promise<ReportItem
 
   if (insertStatusError) {
     throw new Error(`Reporte creado, pero falló estado inicial: ${insertStatusError.message}`)
+  }
+
+  const fileExtension = input.photoFile.name.split('.').pop() ?? 'jpg'
+  const safeName = sanitizeFileName(input.photoFile.name)
+  const filePath = `${insertedReport.id}/${Date.now()}-${safeName || `photo.${fileExtension}`}`
+
+  const { error: uploadError } = await supabase.storage
+    .from(REPORT_IMAGES_BUCKET)
+    .upload(filePath, input.photoFile, {
+      cacheControl: '3600',
+      upsert: false,
+      contentType: input.photoFile.type || 'image/jpeg',
+    })
+
+  if (uploadError) {
+    throw new Error(`Reporte creado, pero falló la subida de imagen: ${uploadError.message}`)
+  }
+
+  const {
+    data: { publicUrl },
+  } = supabase.storage.from(REPORT_IMAGES_BUCKET).getPublicUrl(filePath)
+
+  const reportImagePayload: {
+    report_id: string
+    user_id?: string
+    storage_path: string
+    public_url: string
+  } = {
+    report_id: insertedReport.id,
+    storage_path: filePath,
+    public_url: publicUrl,
+  }
+
+  if (user?.id) {
+    reportImagePayload.user_id = user.id
+  }
+
+  const { error: reportImageError } = await supabase
+    .from('report_images')
+    .insert(reportImagePayload)
+
+  if (reportImageError) {
+    console.warn('[Supabase] No se pudo registrar report_images:', reportImageError.message)
   }
 
   return {
