@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import { CircleMarker, MapContainer, Popup, TileLayer } from 'react-leaflet'
 import { formatDistanceToNow } from 'date-fns'
 import { es } from 'date-fns/locale'
-import { useReports, useUpdateReportStatus, useVoteReport } from './useReports'
+import { useReports, useReportsRealtime, useUpdateReportStatus, useVoteReport } from './useReports'
 import type { ReportCategory, ReportItem, ReportStatus } from './reportsTypes'
 import { NotificationCenter } from '../../shared/notifications/NotificationCenter'
 import { useNotifications } from '../../shared/notifications/useNotifications'
@@ -99,6 +99,7 @@ function appliesDistanceFilter(
 }
 
 export function ReportsOverviewPage() {
+  useReportsRealtime()
   const { data: reports = [], isLoading, isError } = useReports()
   const updateStatusMutation = useUpdateReportStatus()
   const voteReportMutation = useVoteReport()
@@ -253,7 +254,7 @@ export function ReportsOverviewPage() {
   return (
     <main className="mx-auto min-h-screen w-full max-w-md px-4 py-6">
       <header className="mb-6">
-        <p className="text-sm text-slate-600">Fase 3 · Paso 3</p>
+        <p className="text-sm text-slate-600">Fase 4 · Paso 5</p>
         <div className="flex items-center justify-between gap-3">
           <h1 className="text-2xl font-semibold text-slate-900">Reportes urbanos</h1>
           <NotificationCenter />
