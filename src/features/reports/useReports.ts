@@ -125,6 +125,7 @@ export function useVoteReport() {
             ? {
                 ...report,
                 votes: report.votes + 1,
+                hasUserVoted: true,
               }
             : report,
         )

@@ -625,6 +625,7 @@ export function ReportsOverviewPage() {
                         )
                       }}
                       disabled={
+                        Boolean(report.hasUserVoted) ||
                         voteReportMutation.isPending && voteReportMutation.variables?.reportId === report.id
                       }
                       className="rounded-lg border border-slate-300 px-2 py-1 text-xs font-medium text-slate-700 disabled:opacity-60"

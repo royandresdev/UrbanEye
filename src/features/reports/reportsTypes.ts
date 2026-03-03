@@ -13,5 +13,6 @@ export type ReportItem = {
   longitude: number
   address: string
   votes: number
+  hasUserVoted?: boolean
   createdAt: string
 }

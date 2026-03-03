@@ -207,6 +207,7 @@ describe('reportsApi', () => {
         longitude: -99.1,
         address: 'Zona Centro',
         votes: 2,
+        hasUserVoted: false,
         createdAt: '2026-03-01T12:00:00.000Z',
       },
       {
@@ -218,6 +219,7 @@ describe('reportsApi', () => {
         longitude: -99.11,
         address: 'Zona Norte',
         votes: 1,
+        hasUserVoted: false,
         createdAt: '2026-03-01T11:00:00.000Z',
       },
     ])
@@ -278,6 +280,7 @@ describe('reportsApi', () => {
       longitude: -99.1332,
       address: 'Lat 19.43260, Lng -99.13320',
       votes: 0,
+      hasUserVoted: false,
       createdAt: '2026-03-01T10:00:00.000Z',
     })
 
@@ -326,6 +329,7 @@ describe('reportsApi', () => {
       longitude: -99.12,
       address: 'Parque Sur',
       votes: 3,
+      hasUserVoted: false,
       createdAt: '2026-03-01T12:00:00.000Z',
     })
   })

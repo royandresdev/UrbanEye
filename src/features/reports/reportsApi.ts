@@ -19,6 +19,7 @@ type ReportStatusHistoryRow = {
 
 type ReportVoteRow = {
   report_id: string
+  user_id: string | null
 }
 
 type CreateReportInput = {
@@ -43,6 +44,7 @@ function buildReportItems(
   reportRows: ReportRow[],
   statusHistoryRows: ReportStatusHistoryRow[],
   voteRows: ReportVoteRow[],
+  currentUserId: string | null,
 ): ReportItem[] {
   const latestStatusByReport = new Map<string, ReportItem['status']>()
 
@@ -66,6 +68,9 @@ function buildReportItems(
     longitude: reportRow.longitude,
     address: reportRow.address,
     votes: voteCountByReport[reportRow.id] ?? 0,
+    hasUserVoted: voteRows.some(
+      (voteRow) => voteRow.report_id === reportRow.id && voteRow.user_id === currentUserId,
+    ),
     createdAt: reportRow.created_at,
   }))
 }
@@ -169,11 +174,16 @@ export async function createReport(input: CreateReportInput): Promise<ReportItem
     longitude: insertedReport.longitude,
     address: insertedReport.address,
     votes: 0,
+    hasUserVoted: false,
     createdAt: insertedReport.created_at,
   }
 }
 
 export async function getReports(): Promise<ReportItem[]> {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
   const [
     { data: reportRows, error: reportsError },
     { data: statusHistoryRows, error: statusError },
@@ -187,7 +197,7 @@ export async function getReports(): Promise<ReportItem[]> {
       .from('report_status_history')
       .select('report_id, status, created_at')
       .order('created_at', { ascending: false }),
-    supabase.from('report_votes').select('report_id'),
+    supabase.from('report_votes').select('report_id, user_id'),
   ])
 
   if (reportsError) {
@@ -202,7 +212,12 @@ export async function getReports(): Promise<ReportItem[]> {
     throw new Error(`No se pudo cargar la votación de reportes: ${votesError.message}`)
   }
 
-  return buildReportItems(reportRows ?? [], statusHistoryRows ?? [], voteRows ?? [])
+  return buildReportItems(
+    reportRows ?? [],
+    statusHistoryRows ?? [],
+    voteRows ?? [],
+    user?.id ?? null,
+  )
 }
 
 type UpdateReportStatusInput = {
