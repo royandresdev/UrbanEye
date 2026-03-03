@@ -1,15 +1,5 @@
 import type { ReportCategory } from '../reportsTypes'
-
-export type ZoneMetrics = {
-  zone: string
-  totalReports: number
-  pendingReports: number
-  inProgressReports: number
-  resolvedReports: number
-  totalVotes: number
-  criticalScore: number
-  topCategory: ReportCategory
-}
+import type { ZoneMetrics } from '../reportsViewUtils'
 
 type CriticalZonesPanelProps = {
   criticalZones: ZoneMetrics[]

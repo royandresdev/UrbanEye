@@ -1,5 +1,5 @@
 import 'leaflet/dist/leaflet.css'
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
   useCurrentUserRole,
@@ -10,89 +10,20 @@ import {
 } from './useReports'
 import type { ReportCategory, ReportItem, ReportStatus } from './reportsTypes'
 import { useNotifications } from '../../shared/notifications/useNotifications'
-import { CriticalZonesPanel, type ZoneMetrics } from './components/CriticalZonesPanel'
+import { CriticalZonesPanel } from './components/CriticalZonesPanel'
 import { OperationalSummaryPanel } from './components/OperationalSummaryPanel'
 import { ReportListItem } from './components/ReportListItem'
 import { ReportsHeader } from './components/ReportsHeader'
 import { ReportsMapPanel } from './components/ReportsMapPanel'
-
-const categoryLabel: Record<ReportCategory, string> = {
-  bache: 'Bache',
-  luminaria: 'Luminaria',
-  basura: 'Basura',
-  vandalismo: 'Vandalismo',
-}
-
-const statusLabel: Record<ReportStatus, string> = {
-  nuevo: 'Nuevo',
-  en_revision: 'En revisión',
-  en_proceso: 'En proceso',
-  resuelto: 'Resuelto',
-}
-
-const statusBadgeClass: Record<ReportStatus, string> = {
-  nuevo: 'bg-slate-100 text-slate-700',
-  en_revision: 'bg-amber-100 text-amber-800',
-  en_proceso: 'bg-blue-100 text-blue-800',
-  resuelto: 'bg-emerald-100 text-emerald-800',
-}
-
-const statusMarkerColor: Record<ReportStatus, string> = {
-  nuevo: '#475569',
-  en_revision: '#b45309',
-  en_proceso: '#1d4ed8',
-  resuelto: '#047857',
-}
-
-type DistanceFilter = 'all' | '1' | '3' | '5'
-
-const distanceLabel: Record<DistanceFilter, string> = {
-  all: 'Todas',
-  '1': '1 km',
-  '3': '3 km',
-  '5': '5 km',
-}
-
-function getDistanceInKm(
-  from: { latitude: number; longitude: number },
-  to: { latitude: number; longitude: number },
-): number {
-  const earthRadiusKm = 6371
-  const latDelta = ((to.latitude - from.latitude) * Math.PI) / 180
-  const lonDelta = ((to.longitude - from.longitude) * Math.PI) / 180
-
-  const a =
-    Math.sin(latDelta / 2) * Math.sin(latDelta / 2) +
-    Math.cos((from.latitude * Math.PI) / 180) *
-    Math.cos((to.latitude * Math.PI) / 180) *
-    Math.sin(lonDelta / 2) *
-    Math.sin(lonDelta / 2)
-
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
-  return earthRadiusKm * c
-}
-
-function appliesDistanceFilter(
-  report: ReportItem,
-  userLocation: { latitude: number; longitude: number } | null,
-  distanceFilter: DistanceFilter,
-): boolean {
-  if (distanceFilter === 'all') {
-    return true
-  }
-
-  if (!userLocation) {
-    return true
-  }
-
-  const distanceKm = Number(distanceFilter)
-  const reportDistance = getDistanceInKm(userLocation, {
-    latitude: report.latitude,
-    longitude: report.longitude,
-  })
-
-  return reportDistance <= distanceKm
-}
+import {
+  categoryLabel,
+  distanceLabel,
+  statusBadgeClass,
+  statusLabel,
+  statusMarkerColor,
+} from './reportsUiConstants'
+import { useReportsViewModel } from './useReportsViewModel'
+import type { DistanceFilter } from './reportsViewUtils'
 
 export function ReportsOverviewPage() {
   useReportsRealtime()
@@ -108,117 +39,13 @@ export function ReportsOverviewPage() {
   const [userLocation, setUserLocation] = useState<{ latitude: number; longitude: number } | null>(null)
   const [locationError, setLocationError] = useState<string | null>(null)
 
-  const prioritizedReports = useMemo(
-    () =>
-      [...reports].sort((firstReport, secondReport) => {
-        if (secondReport.votes !== firstReport.votes) {
-          return secondReport.votes - firstReport.votes
-        }
-
-        return new Date(secondReport.createdAt).getTime() - new Date(firstReport.createdAt).getTime()
-      }),
-    [reports],
-  )
-
-  const filteredReports = useMemo(
-    () =>
-      prioritizedReports.filter((report) => {
-        const categoryMatches = selectedCategory === 'all' || report.category === selectedCategory
-        const statusMatches = selectedStatus === 'all' || report.status === selectedStatus
-        const distanceMatches = appliesDistanceFilter(report, userLocation, selectedDistance)
-
-        return categoryMatches && statusMatches && distanceMatches
-      }),
-    [prioritizedReports, selectedCategory, selectedStatus, selectedDistance, userLocation],
-  )
-
-  const operationalSummary = useMemo(() => {
-    const pending = prioritizedReports.filter(
-      (report) => report.status === 'nuevo' || report.status === 'en_revision',
-    ).length
-    const inProgress = prioritizedReports.filter((report) => report.status === 'en_proceso').length
-    const resolved = prioritizedReports.filter((report) => report.status === 'resuelto').length
-    const highPriority = prioritizedReports.filter((report) => report.votes >= 15).length
-
-    return { pending, inProgress, resolved, highPriority }
-  }, [prioritizedReports])
-
-  const criticalZones = useMemo(() => {
-    const zoneMap = new Map<
-      string,
-      {
-        totalReports: number
-        pendingReports: number
-        inProgressReports: number
-        resolvedReports: number
-        totalVotes: number
-        categoryCount: Record<ReportCategory, number>
-      }
-    >()
-
-    for (const report of prioritizedReports) {
-      const currentZone = zoneMap.get(report.address) ?? {
-        totalReports: 0,
-        pendingReports: 0,
-        inProgressReports: 0,
-        resolvedReports: 0,
-        totalVotes: 0,
-        categoryCount: {
-          bache: 0,
-          luminaria: 0,
-          basura: 0,
-          vandalismo: 0,
-        },
-      }
-
-      currentZone.totalReports += 1
-      currentZone.totalVotes += report.votes
-      currentZone.categoryCount[report.category] += 1
-
-      if (report.status === 'resuelto') {
-        currentZone.resolvedReports += 1
-      } else if (report.status === 'en_proceso') {
-        currentZone.inProgressReports += 1
-      } else {
-        currentZone.pendingReports += 1
-      }
-
-      zoneMap.set(report.address, currentZone)
-    }
-
-    const zoneMetrics: ZoneMetrics[] = Array.from(zoneMap.entries()).map(([zone, stats]) => {
-      const topCategory = Object.entries(stats.categoryCount).sort((firstCategory, secondCategory) => {
-        if (secondCategory[1] !== firstCategory[1]) {
-          return secondCategory[1] - firstCategory[1]
-        }
-
-        return firstCategory[0].localeCompare(secondCategory[0])
-      })[0][0] as ReportCategory
-
-      const criticalScore = Number(
-        (stats.pendingReports * 3 + stats.inProgressReports * 2 + stats.totalVotes * 0.2).toFixed(1),
-      )
-
-      return {
-        zone,
-        totalReports: stats.totalReports,
-        pendingReports: stats.pendingReports,
-        inProgressReports: stats.inProgressReports,
-        resolvedReports: stats.resolvedReports,
-        totalVotes: stats.totalVotes,
-        criticalScore,
-        topCategory,
-      }
-    })
-
-    return zoneMetrics.sort((firstZone, secondZone) => {
-      if (secondZone.criticalScore !== firstZone.criticalScore) {
-        return secondZone.criticalScore - firstZone.criticalScore
-      }
-
-      return secondZone.totalReports - firstZone.totalReports
-    })
-  }, [prioritizedReports])
+  const { filteredReports, operationalSummary, criticalZones, center } = useReportsViewModel({
+    reports,
+    selectedCategory,
+    selectedStatus,
+    selectedDistance,
+    userLocation,
+  })
 
   const onUseCurrentLocation = () => {
     setLocationError(null)
@@ -244,10 +71,6 @@ export function ReportsOverviewPage() {
       },
     )
   }
-
-  const center: [number, number] = filteredReports.length
-    ? [filteredReports[0].latitude, filteredReports[0].longitude]
-    : [19.432608, -99.133209]
 
   const handleStatusChange = (report: ReportItem, selectedStatus: ReportStatus) => {
     updateStatusMutation.mutate(
