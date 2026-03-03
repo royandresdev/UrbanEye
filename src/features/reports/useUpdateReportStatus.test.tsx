@@ -6,12 +6,21 @@ import { reportsQueryKey, useUpdateReportStatus } from './useReports'
 import type { ReportItem } from './reportsTypes'
 
 const updateReportStatusMock = vi.hoisted(() => vi.fn())
+const channelFactoryMock = vi.hoisted(() => vi.fn())
+const removeChannelMock = vi.hoisted(() => vi.fn())
 
 vi.mock('./reportsApi', () => ({
   createReport: vi.fn(),
   getReports: vi.fn(),
   updateReportStatus: updateReportStatusMock,
   voteReport: vi.fn(),
+}))
+
+vi.mock('../../shared/lib/supabase', () => ({
+  supabase: {
+    channel: channelFactoryMock,
+    removeChannel: removeChannelMock,
+  },
 }))
 
 function createWrapper(queryClient: QueryClient) {

@@ -152,9 +152,11 @@ describe('useReports hooks', () => {
     const initialReports = buildReports()
     queryClient.setQueryData(reportsQueryKey, initialReports)
 
-    let rejectVotePromise: ((reason?: unknown) => void) | null = null
-    const votePromise = new Promise<never>((_resolve, reject) => {
-      rejectVotePromise = reject
+    type RejectVote = (reason?: unknown) => void
+    let rejectVotePromise: RejectVote = () => { }
+
+    const votePromise = new Promise<unknown>((_resolve, reject) => {
+      rejectVotePromise = reject as RejectVote
     })
 
     voteReportMock.mockReturnValueOnce(votePromise)
@@ -170,7 +172,7 @@ describe('useReports hooks', () => {
       expect(optimistic?.[0].votes).toBe(5)
     })
 
-    rejectVotePromise?.(new Error('No se pudo votar'))
+    rejectVotePromise(new Error('No se pudo votar'))
 
     await expect(pendingVote).rejects.toThrow('No se pudo votar')
 
