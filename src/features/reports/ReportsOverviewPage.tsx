@@ -1,7 +1,6 @@
 import 'leaflet/dist/leaflet.css'
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { CircleMarker, MapContainer, Popup, TileLayer } from 'react-leaflet'
 import { formatDistanceToNow } from 'date-fns'
 import { es } from 'date-fns/locale'
 import {
@@ -12,8 +11,11 @@ import {
   useVoteReport,
 } from './useReports'
 import type { ReportCategory, ReportItem, ReportStatus } from './reportsTypes'
-import { NotificationCenter } from '../../shared/notifications/NotificationCenter'
 import { useNotifications } from '../../shared/notifications/useNotifications'
+import { CriticalZonesPanel, type ZoneMetrics } from './components/CriticalZonesPanel'
+import { OperationalSummaryPanel } from './components/OperationalSummaryPanel'
+import { ReportsHeader } from './components/ReportsHeader'
+import { ReportsMapPanel } from './components/ReportsMapPanel'
 
 const categoryLabel: Record<ReportCategory, string> = {
   bache: 'Bache',
@@ -41,17 +43,6 @@ const statusMarkerColor: Record<ReportStatus, string> = {
   en_revision: '#b45309',
   en_proceso: '#1d4ed8',
   resuelto: '#047857',
-}
-
-type ZoneMetrics = {
-  zone: string
-  totalReports: number
-  pendingReports: number
-  inProgressReports: number
-  resolvedReports: number
-  totalVotes: number
-  criticalScore: number
-  topCategory: ReportCategory
 }
 
 type DistanceFilter = 'all' | '1' | '3' | '5'
@@ -261,106 +252,26 @@ export function ReportsOverviewPage() {
 
   return (
     <main className="mx-auto min-h-screen w-full max-w-md px-4 py-6">
-      <header className="mb-6">
-        <p className="text-sm text-slate-600">Fase 4 · Paso 5</p>
-        <div className="flex items-center justify-between gap-3">
-          <h1 className="text-2xl font-semibold text-slate-900">Reportes urbanos</h1>
-          <NotificationCenter />
-        </div>
-        <p className="mt-2 text-sm text-slate-600">
-          Vista operativa con notificaciones y métricas de zonas críticas.
-        </p>
-      </header>
+      <ReportsHeader />
 
-      <section className="mb-4 rounded-xl bg-white p-4 shadow-sm">
-        <h2 className="mb-3 text-base font-medium text-slate-900">Panel operativo</h2>
-        <div className="grid grid-cols-2 gap-2">
-          <article className="rounded-lg border border-slate-200 p-3">
-            <p className="text-xs text-slate-500">Pendientes</p>
-            <p className="mt-1 text-lg font-semibold text-slate-900">{operationalSummary.pending}</p>
-          </article>
-          <article className="rounded-lg border border-slate-200 p-3">
-            <p className="text-xs text-slate-500">En proceso</p>
-            <p className="mt-1 text-lg font-semibold text-slate-900">{operationalSummary.inProgress}</p>
-          </article>
-          <article className="rounded-lg border border-slate-200 p-3">
-            <p className="text-xs text-slate-500">Resueltos</p>
-            <p className="mt-1 text-lg font-semibold text-slate-900">{operationalSummary.resolved}</p>
-          </article>
-          <article className="rounded-lg border border-slate-200 p-3">
-            <p className="text-xs text-slate-500">Alta prioridad (15+)</p>
-            <p className="mt-1 text-lg font-semibold text-slate-900">{operationalSummary.highPriority}</p>
-          </article>
-        </div>
+      <OperationalSummaryPanel
+        summary={operationalSummary}
+        onViewNew={() => {
+          setSelectedStatus('nuevo')
+          setSelectedDistance('all')
+        }}
+        onViewInReview={() => {
+          setSelectedStatus('en_revision')
+          setSelectedDistance('all')
+        }}
+        onClearFilters={() => {
+          setSelectedCategory('all')
+          setSelectedStatus('all')
+          setSelectedDistance('all')
+        }}
+      />
 
-        <div className="mt-3 flex flex-wrap gap-2">
-          <button
-            type="button"
-            onClick={() => {
-              setSelectedStatus('nuevo')
-              setSelectedDistance('all')
-            }}
-            className="rounded-lg border border-slate-300 px-3 py-2 text-xs font-medium text-slate-700"
-          >
-            Ver nuevos
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              setSelectedStatus('en_revision')
-              setSelectedDistance('all')
-            }}
-            className="rounded-lg border border-slate-300 px-3 py-2 text-xs font-medium text-slate-700"
-          >
-            Ver en revisión
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              setSelectedCategory('all')
-              setSelectedStatus('all')
-              setSelectedDistance('all')
-            }}
-            className="rounded-lg border border-slate-300 px-3 py-2 text-xs font-medium text-slate-700"
-          >
-            Limpiar filtros
-          </button>
-        </div>
-      </section>
-
-      <section className="mb-4 rounded-xl bg-white p-4 shadow-sm">
-        <h2 className="mb-3 text-base font-medium text-slate-900">Métricas de zonas críticas</h2>
-
-        {criticalZones.length === 0 ? (
-          <p className="text-sm text-slate-600">No hay datos suficientes para calcular métricas.</p>
-        ) : (
-          <ul className="space-y-3">
-            {criticalZones.slice(0, 3).map((zone, index) => (
-              <li key={zone.zone} className="rounded-lg border border-slate-200 p-3">
-                <div className="mb-2 flex items-center justify-between gap-2">
-                  <p className="text-sm font-medium text-slate-900">
-                    #{index + 1} · {zone.zone}
-                  </p>
-                  <span className="rounded-full bg-slate-100 px-2 py-1 text-xs font-medium text-slate-700">
-                    Score {zone.criticalScore}
-                  </span>
-                </div>
-
-                <div className="grid grid-cols-2 gap-2 text-xs text-slate-600">
-                  <p>Reportes: {zone.totalReports}</p>
-                  <p>Votos: {zone.totalVotes}</p>
-                  <p>Pendientes: {zone.pendingReports}</p>
-                  <p>En proceso: {zone.inProgressReports}</p>
-                </div>
-
-                <p className="mt-2 text-xs text-slate-600">
-                  Categoría dominante: <span className="font-medium text-slate-800">{categoryLabel[zone.topCategory]}</span>
-                </p>
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
+      <CriticalZonesPanel criticalZones={criticalZones} categoryLabel={categoryLabel} />
 
       <section className="mb-4 rounded-xl bg-white p-4 shadow-sm">
         <h2 className="mb-3 text-base font-medium text-slate-900">Filtros</h2>
@@ -435,35 +346,12 @@ export function ReportsOverviewPage() {
         </div>
       </section>
 
-      <section className="mb-4 rounded-xl bg-white p-4 shadow-sm">
-        <div className="mb-3 flex items-center justify-between">
-          <h2 className="text-base font-medium text-slate-900">Mapa</h2>
-          <Link to="/reports/new" className="text-sm font-medium text-slate-900 underline">
-            Nuevo reporte
-          </Link>
-        </div>
-        <div className="h-64 overflow-hidden rounded-lg border border-slate-200">
-          <MapContainer center={center} zoom={13} scrollWheelZoom={false} className="h-full w-full">
-            <TileLayer
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            />
-            {filteredReports.map((report) => (
-              <CircleMarker
-                key={report.id}
-                center={[report.latitude, report.longitude]}
-                radius={8}
-                pathOptions={{ color: statusMarkerColor[report.status], fillOpacity: 0.8 }}
-              >
-                <Popup>
-                  <p className="text-sm font-medium">{categoryLabel[report.category]}</p>
-                  <p className="text-xs">{report.address}</p>
-                </Popup>
-              </CircleMarker>
-            ))}
-          </MapContainer>
-        </div>
-      </section>
+      <ReportsMapPanel
+        center={center}
+        reports={filteredReports}
+        categoryLabel={categoryLabel}
+        statusMarkerColor={statusMarkerColor}
+      />
 
       <section className="rounded-xl bg-white p-4 shadow-sm">
         <h2 className="mb-3 text-base font-medium text-slate-900">Lista</h2>
