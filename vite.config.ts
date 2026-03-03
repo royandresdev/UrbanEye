@@ -60,6 +60,12 @@ export default defineConfig({
       provider: 'v8',
       reporter: ['text', 'html', 'json-summary'],
       reportsDirectory: './coverage',
+      thresholds: {
+        lines: 60,
+        functions: 60,
+        statements: 60,
+        branches: 50,
+      },
       exclude: [
         '**/*.d.ts',
         '**/*.test.{ts,tsx}',
