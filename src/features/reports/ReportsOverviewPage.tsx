@@ -4,7 +4,13 @@ import { Link } from 'react-router-dom'
 import { CircleMarker, MapContainer, Popup, TileLayer } from 'react-leaflet'
 import { formatDistanceToNow } from 'date-fns'
 import { es } from 'date-fns/locale'
-import { useReports, useReportsRealtime, useUpdateReportStatus, useVoteReport } from './useReports'
+import {
+  useCurrentUserRole,
+  useReports,
+  useReportsRealtime,
+  useUpdateReportStatus,
+  useVoteReport,
+} from './useReports'
 import type { ReportCategory, ReportItem, ReportStatus } from './reportsTypes'
 import { NotificationCenter } from '../../shared/notifications/NotificationCenter'
 import { useNotifications } from '../../shared/notifications/useNotifications'
@@ -101,9 +107,11 @@ function appliesDistanceFilter(
 export function ReportsOverviewPage() {
   useReportsRealtime()
   const { data: reports = [], isLoading, isError } = useReports()
+  const { data: currentUserRole = 'ciudadano' } = useCurrentUserRole()
   const updateStatusMutation = useUpdateReportStatus()
   const voteReportMutation = useVoteReport()
   const { addNotification } = useNotifications()
+  const isAuthority = currentUserRole === 'autoridad'
   const [selectedCategory, setSelectedCategory] = useState<'all' | ReportCategory>('all')
   const [selectedStatus, setSelectedStatus] = useState<'all' | ReportStatus>('all')
   const [selectedDistance, setSelectedDistance] = useState<DistanceFilter>('all')
@@ -476,127 +484,131 @@ export function ReportsOverviewPage() {
                   </span>
                 </div>
                 <p className="text-sm text-slate-700">{report.description}</p>
-                <div className="mt-3">
-                  <label className="text-xs text-slate-600">
-                    Estado
-                    <select
-                      value={report.status}
-                      onChange={(event) => {
-                        const selectedStatus = event.target.value as ReportStatus
+                {isAuthority ? (
+                  <div className="mt-3">
+                    <label className="text-xs text-slate-600">
+                      Estado
+                      <select
+                        value={report.status}
+                        onChange={(event) => {
+                          const selectedStatus = event.target.value as ReportStatus
 
-                        updateStatusMutation.mutate({
-                          reportId: report.id,
-                          status: selectedStatus,
-                        },
-                          {
-                            onSuccess: () => {
-                              addNotification({
-                                title: 'Estado actualizado',
-                                message: `${categoryLabel[report.category]} ahora está en ${statusLabel[selectedStatus]}.`,
-                                level: 'success',
-                              })
+                          updateStatusMutation.mutate(
+                            {
+                              reportId: report.id,
+                              status: selectedStatus,
                             },
-                            onError: () => {
-                              addNotification({
-                                title: 'Error al actualizar',
-                                message: 'No fue posible actualizar el estado del reporte.',
-                                level: 'warning',
-                              })
+                            {
+                              onSuccess: () => {
+                                addNotification({
+                                  title: 'Estado actualizado',
+                                  message: `${categoryLabel[report.category]} ahora está en ${statusLabel[selectedStatus]}.`,
+                                  level: 'success',
+                                })
+                              },
+                              onError: () => {
+                                addNotification({
+                                  title: 'Error al actualizar',
+                                  message: 'No fue posible actualizar el estado del reporte.',
+                                  level: 'warning',
+                                })
+                              },
                             },
-                          })
-                      }}
-                      disabled={
-                        updateStatusMutation.isPending &&
-                        updateStatusMutation.variables?.reportId === report.id
-                      }
-                      className="mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm focus:border-slate-400 focus:outline-none disabled:opacity-60"
-                    >
-                      {Object.entries(statusLabel).map(([value, label]) => (
-                        <option key={value} value={value}>
-                          {label}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
+                          )
+                        }}
+                        disabled={
+                          updateStatusMutation.isPending &&
+                          updateStatusMutation.variables?.reportId === report.id
+                        }
+                        className="mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm focus:border-slate-400 focus:outline-none disabled:opacity-60"
+                      >
+                        {Object.entries(statusLabel).map(([value, label]) => (
+                          <option key={value} value={value}>
+                            {label}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
 
-                  <div className="mt-2 flex flex-wrap gap-2">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        updateStatusMutation.mutate(
-                          { reportId: report.id, status: 'en_revision' },
-                          {
-                            onSuccess: () => {
-                              addNotification({
-                                title: 'Reporte tomado',
-                                message: `${categoryLabel[report.category]} pasó a En revisión.`,
-                                level: 'info',
-                              })
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          updateStatusMutation.mutate(
+                            { reportId: report.id, status: 'en_revision' },
+                            {
+                              onSuccess: () => {
+                                addNotification({
+                                  title: 'Reporte tomado',
+                                  message: `${categoryLabel[report.category]} pasó a En revisión.`,
+                                  level: 'info',
+                                })
+                              },
                             },
-                          },
-                        )
-                      }}
-                      disabled={
-                        report.status === 'en_revision' ||
-                        (updateStatusMutation.isPending &&
-                          updateStatusMutation.variables?.reportId === report.id)
-                      }
-                      className="rounded-lg border border-slate-300 px-2 py-1 text-xs font-medium text-slate-700 disabled:opacity-50"
-                    >
-                      Tomar
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        updateStatusMutation.mutate(
-                          { reportId: report.id, status: 'en_proceso' },
-                          {
-                            onSuccess: () => {
-                              addNotification({
-                                title: 'Atención iniciada',
-                                message: `${categoryLabel[report.category]} pasó a En proceso.`,
-                                level: 'info',
-                              })
+                          )
+                        }}
+                        disabled={
+                          report.status === 'en_revision' ||
+                          (updateStatusMutation.isPending &&
+                            updateStatusMutation.variables?.reportId === report.id)
+                        }
+                        className="rounded-lg border border-slate-300 px-2 py-1 text-xs font-medium text-slate-700 disabled:opacity-50"
+                      >
+                        Tomar
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          updateStatusMutation.mutate(
+                            { reportId: report.id, status: 'en_proceso' },
+                            {
+                              onSuccess: () => {
+                                addNotification({
+                                  title: 'Atención iniciada',
+                                  message: `${categoryLabel[report.category]} pasó a En proceso.`,
+                                  level: 'info',
+                                })
+                              },
                             },
-                          },
-                        )
-                      }}
-                      disabled={
-                        report.status === 'en_proceso' ||
-                        (updateStatusMutation.isPending &&
-                          updateStatusMutation.variables?.reportId === report.id)
-                      }
-                      className="rounded-lg border border-slate-300 px-2 py-1 text-xs font-medium text-slate-700 disabled:opacity-50"
-                    >
-                      Iniciar
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        updateStatusMutation.mutate(
-                          { reportId: report.id, status: 'resuelto' },
-                          {
-                            onSuccess: () => {
-                              addNotification({
-                                title: 'Reporte resuelto',
-                                message: `${categoryLabel[report.category]} marcado como Resuelto.`,
-                                level: 'success',
-                              })
+                          )
+                        }}
+                        disabled={
+                          report.status === 'en_proceso' ||
+                          (updateStatusMutation.isPending &&
+                            updateStatusMutation.variables?.reportId === report.id)
+                        }
+                        className="rounded-lg border border-slate-300 px-2 py-1 text-xs font-medium text-slate-700 disabled:opacity-50"
+                      >
+                        Iniciar
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          updateStatusMutation.mutate(
+                            { reportId: report.id, status: 'resuelto' },
+                            {
+                              onSuccess: () => {
+                                addNotification({
+                                  title: 'Reporte resuelto',
+                                  message: `${categoryLabel[report.category]} marcado como Resuelto.`,
+                                  level: 'success',
+                                })
+                              },
                             },
-                          },
-                        )
-                      }}
-                      disabled={
-                        report.status === 'resuelto' ||
-                        (updateStatusMutation.isPending &&
-                          updateStatusMutation.variables?.reportId === report.id)
-                      }
-                      className="rounded-lg border border-slate-300 px-2 py-1 text-xs font-medium text-slate-700 disabled:opacity-50"
-                    >
-                      Resolver
-                    </button>
+                          )
+                        }}
+                        disabled={
+                          report.status === 'resuelto' ||
+                          (updateStatusMutation.isPending &&
+                            updateStatusMutation.variables?.reportId === report.id)
+                        }
+                        className="rounded-lg border border-slate-300 px-2 py-1 text-xs font-medium text-slate-700 disabled:opacity-50"
+                      >
+                        Resolver
+                      </button>
+                    </div>
                   </div>
-                </div>
+                ) : null}
                 <div className="mt-2 flex items-center justify-between text-xs text-slate-500">
                   <span>{report.address}</span>
                   <div className="flex items-center gap-2">
