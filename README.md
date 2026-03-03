@@ -193,6 +193,21 @@ VITE_MAP_TILE_URL=
   - `public_url` (text),
   - `created_at` (timestamptz default now()).
 
+### Funciones por rol (Fase 4 · Paso 6)
+
+**Ciudadano**
+- Registrarse e iniciar/cerrar sesión.
+- Crear reportes.
+- Subir imágenes del reporte.
+- Votar/priorizar reportes.
+- Ver mapa, lista, estados y métricas públicas.
+
+**Autoridad**
+- Todo lo de ciudadano.
+- Cambiar estado de reportes (`nuevo`, `en_revision`, `en_proceso`, `resuelto`).
+- Gestionar flujo operativo de atención.
+- Consultar y priorizar zonas críticas para intervención.
+
 ---
 
 ## 10) Roadmap por fases
