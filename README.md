@@ -249,6 +249,28 @@ VITE_MAP_TILE_URL=
 - Integrar pruebas y coverage en flujo de CI/CD.
 - Documentar comandos y criterios de calidad de pruebas en el README.
 
+### Fase 5 · Paso 1 — Estrategia de pruebas (definición)
+
+**Objetivo inicial**
+- Validar flujos críticos del producto antes de ampliar cobertura global.
+- Reducir regresiones en autenticación, reportes y priorización comunitaria.
+
+**Pirámide de pruebas**
+- **Unitarias (base):** utilidades puras, validaciones de formularios, cálculos (distancia, métricas de zonas).
+- **Integración (prioridad):** hooks de reportes/auth con React Query y Supabase (mockeado), mutaciones y estados de carga/error.
+- **UI crítica (mínimas):** login/registro, creación de reporte, voto, cambio de estado.
+
+**Cobertura funcional prioritaria**
+- Auth: registro, login, logout, manejo de correo no confirmado.
+- Reportes: alta, listado, filtros, votación y transición de estados.
+- Datos: sincronización de cache y actualización en tiempo real.
+
+**Criterios de salida del Paso 1**
+- Estrategia documentada y aceptada.
+- Alcance de módulos críticos definido.
+- Convención de pruebas acordada (`*.test.ts` / `*.test.tsx`).
+- Lista de casos iniciales priorizados para implementación en el Paso 2.
+
 ---
 
 ## 11) Criterios de calidad
