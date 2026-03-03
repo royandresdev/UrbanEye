@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { getReports, updateReportStatus, voteReport } from './reportsApi'
+import { createReport, getReports, updateReportStatus, voteReport } from './reportsApi'
 import type { ReportItem, ReportStatus } from './reportsTypes'
 
 export const reportsQueryKey = ['reports'] as const
@@ -8,6 +8,17 @@ export function useReports() {
   return useQuery({
     queryKey: reportsQueryKey,
     queryFn: getReports,
+  })
+}
+
+export function useCreateReport() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: createReport,
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: reportsQueryKey })
+    },
   })
 }
 

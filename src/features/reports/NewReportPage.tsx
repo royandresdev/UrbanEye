@@ -7,6 +7,7 @@ import {
   type CreateReportFormValues,
   createReportSchema,
 } from './reportSchemas'
+import { useCreateReport } from './useReports'
 import { NotificationCenter } from '../../shared/notifications/NotificationCenter'
 import { useNotifications } from '../../shared/notifications/useNotifications'
 
@@ -20,6 +21,7 @@ const categoryOptions = [
 export function NewReportPage() {
   const [geoError, setGeoError] = useState<string | null>(null)
   const { addNotification } = useNotifications()
+  const createReportMutation = useCreateReport()
   const {
     control,
     register,
@@ -71,12 +73,17 @@ export function NewReportPage() {
     )
   }
 
-  const onSubmit = async () => {
-    await Promise.resolve()
+  const onSubmit = async (values: CreateReportFormValues) => {
+    await createReportMutation.mutateAsync({
+      category: values.category,
+      description: values.description,
+      latitude: values.latitude,
+      longitude: values.longitude,
+    })
 
     addNotification({
       title: 'Reporte recibido',
-      message: 'Tu incidencia fue registrada y está en estado Nuevo.',
+      message: 'Tu incidencia fue registrada en Supabase con estado Nuevo.',
       level: 'success',
     })
   }
@@ -163,14 +170,14 @@ export function NewReportPage() {
 
           <button
             type="submit"
-            disabled={isSubmitting}
+            disabled={isSubmitting || createReportMutation.isPending}
             className="w-full rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-60"
           >
-            Publicar reporte
+            {createReportMutation.isPending ? 'Publicando...' : 'Publicar reporte'}
           </button>
 
           {isSubmitSuccessful ? (
-            <p className="text-sm text-slate-700">Reporte validado correctamente. Falta conexión a backend.</p>
+            <p className="text-sm text-slate-700">Reporte publicado correctamente en backend.</p>
           ) : null}
         </form>
       </section>

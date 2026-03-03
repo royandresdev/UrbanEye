@@ -1,55 +1,154 @@
 import type { ReportItem } from './reportsTypes'
+import { supabase } from '../../shared/lib/supabase'
 
-const mockReports: ReportItem[] = [
-  {
-    id: 'rpt-001',
-    category: 'bache',
-    description: 'Bache profundo en carril derecho, peligroso para motos.',
+type ReportRow = {
+  id: string
+  category: ReportItem['category']
+  description: string
+  latitude: number
+  longitude: number
+  address: string
+  created_at: string
+}
+
+type ReportStatusHistoryRow = {
+  report_id: string
+  status: ReportItem['status']
+  created_at: string
+}
+
+type ReportVoteRow = {
+  report_id: string
+}
+
+type CreateReportInput = {
+  category: ReportItem['category']
+  description: string
+  latitude: number
+  longitude: number
+}
+
+function buildReportItems(
+  reportRows: ReportRow[],
+  statusHistoryRows: ReportStatusHistoryRow[],
+  voteRows: ReportVoteRow[],
+): ReportItem[] {
+  const latestStatusByReport = new Map<string, ReportItem['status']>()
+
+  for (const statusRow of statusHistoryRows) {
+    if (!latestStatusByReport.has(statusRow.report_id)) {
+      latestStatusByReport.set(statusRow.report_id, statusRow.status)
+    }
+  }
+
+  const voteCountByReport = voteRows.reduce<Record<string, number>>((accumulator, voteRow) => {
+    accumulator[voteRow.report_id] = (accumulator[voteRow.report_id] ?? 0) + 1
+    return accumulator
+  }, {})
+
+  return reportRows.map((reportRow) => ({
+    id: reportRow.id,
+    category: reportRow.category,
+    description: reportRow.description,
+    status: latestStatusByReport.get(reportRow.id) ?? 'nuevo',
+    latitude: reportRow.latitude,
+    longitude: reportRow.longitude,
+    address: reportRow.address,
+    votes: voteCountByReport[reportRow.id] ?? 0,
+    createdAt: reportRow.created_at,
+  }))
+}
+
+export async function createReport(input: CreateReportInput): Promise<ReportItem> {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  const address = `Lat ${input.latitude.toFixed(5)}, Lng ${input.longitude.toFixed(5)}`
+
+  const reportPayload: {
+    category: ReportItem['category']
+    description: string
+    latitude: number
+    longitude: number
+    address: string
+    user_id?: string
+  } = {
+    category: input.category,
+    description: input.description,
+    latitude: input.latitude,
+    longitude: input.longitude,
+    address,
+  }
+
+  if (user?.id) {
+    reportPayload.user_id = user.id
+  }
+
+  const { data: insertedReport, error: insertReportError } = await supabase
+    .from('reports')
+    .insert(reportPayload)
+    .select('id, category, description, latitude, longitude, address, created_at')
+    .single<ReportRow>()
+
+  if (insertReportError || !insertedReport) {
+    throw new Error(
+      `No se pudo crear el reporte: ${insertReportError?.message ?? 'Error desconocido'}`,
+    )
+  }
+
+  const { error: insertStatusError } = await supabase.from('report_status_history').insert({
+    report_id: insertedReport.id,
     status: 'nuevo',
-    latitude: 19.432608,
-    longitude: -99.133209,
-    address: 'Av. Juárez, Centro',
-    votes: 12,
-    createdAt: '2026-03-01T10:30:00Z',
-  },
-  {
-    id: 'rpt-002',
-    category: 'luminaria',
-    description: 'Luminaria apagada desde hace 4 noches frente a la escuela.',
-    status: 'en_revision',
-    latitude: 19.42681,
-    longitude: -99.16767,
-    address: 'Col. Roma Norte',
-    votes: 21,
-    createdAt: '2026-03-01T22:10:00Z',
-  },
-  {
-    id: 'rpt-003',
-    category: 'basura',
-    description: 'Acumulación de bolsas en esquina, hay malos olores.',
-    status: 'en_proceso',
-    latitude: 19.44023,
-    longitude: -99.14588,
-    address: 'Eje Central, Doctores',
-    votes: 9,
-    createdAt: '2026-03-02T08:05:00Z',
-  },
-  {
-    id: 'rpt-004',
-    category: 'vandalismo',
-    description: 'Pared con grafiti ofensivo y daños en señalética urbana.',
-    status: 'resuelto',
-    latitude: 19.4183,
-    longitude: -99.1564,
-    address: 'Col. Del Valle Centro',
-    votes: 6,
-    createdAt: '2026-02-28T19:45:00Z',
-  },
-]
+  })
+
+  if (insertStatusError) {
+    throw new Error(`Reporte creado, pero falló estado inicial: ${insertStatusError.message}`)
+  }
+
+  return {
+    id: insertedReport.id,
+    category: insertedReport.category,
+    description: insertedReport.description,
+    status: 'nuevo',
+    latitude: insertedReport.latitude,
+    longitude: insertedReport.longitude,
+    address: insertedReport.address,
+    votes: 0,
+    createdAt: insertedReport.created_at,
+  }
+}
 
 export async function getReports(): Promise<ReportItem[]> {
-  await new Promise((resolve) => setTimeout(resolve, 400))
-  return [...mockReports]
+  const [
+    { data: reportRows, error: reportsError },
+    { data: statusHistoryRows, error: statusError },
+    { data: voteRows, error: votesError },
+  ] = await Promise.all([
+    supabase
+      .from('reports')
+      .select('id, category, description, latitude, longitude, address, created_at')
+      .order('created_at', { ascending: false }),
+    supabase
+      .from('report_status_history')
+      .select('report_id, status, created_at')
+      .order('created_at', { ascending: false }),
+    supabase.from('report_votes').select('report_id'),
+  ])
+
+  if (reportsError) {
+    throw new Error(`No se pudieron cargar los reportes: ${reportsError.message}`)
+  }
+
+  if (statusError) {
+    throw new Error(`No se pudo cargar el historial de estados: ${statusError.message}`)
+  }
+
+  if (votesError) {
+    throw new Error(`No se pudo cargar la votación de reportes: ${votesError.message}`)
+  }
+
+  return buildReportItems(reportRows ?? [], statusHistoryRows ?? [], voteRows ?? [])
 }
 
 type UpdateReportStatusInput = {
@@ -61,20 +160,21 @@ export async function updateReportStatus({
   reportId,
   status,
 }: UpdateReportStatusInput): Promise<ReportItem> {
-  await new Promise((resolve) => setTimeout(resolve, 250))
+  const { error } = await supabase.from('report_status_history').insert({
+    report_id: reportId,
+    status,
+  })
 
-  const reportIndex = mockReports.findIndex((report) => report.id === reportId)
+  if (error) {
+    throw new Error(`No se pudo actualizar el estado: ${error.message}`)
+  }
 
-  if (reportIndex < 0) {
+  const reports = await getReports()
+  const updatedReport = reports.find((report) => report.id === reportId)
+
+  if (!updatedReport) {
     throw new Error('Reporte no encontrado')
   }
-
-  const updatedReport: ReportItem = {
-    ...mockReports[reportIndex],
-    status,
-  }
-
-  mockReports[reportIndex] = updatedReport
 
   return updatedReport
 }
@@ -84,20 +184,27 @@ type VoteReportInput = {
 }
 
 export async function voteReport({ reportId }: VoteReportInput): Promise<ReportItem> {
-  await new Promise((resolve) => setTimeout(resolve, 200))
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
 
-  const reportIndex = mockReports.findIndex((report) => report.id === reportId)
+  const votePayload: { report_id: string; user_id?: string } = { report_id: reportId }
+  if (user?.id) {
+    votePayload.user_id = user.id
+  }
 
-  if (reportIndex < 0) {
+  const { error } = await supabase.from('report_votes').insert(votePayload)
+
+  if (error) {
+    throw new Error(`No se pudo registrar el voto: ${error.message}`)
+  }
+
+  const reports = await getReports()
+  const updatedReport = reports.find((report) => report.id === reportId)
+
+  if (!updatedReport) {
     throw new Error('Reporte no encontrado')
   }
-
-  const updatedReport: ReportItem = {
-    ...mockReports[reportIndex],
-    votes: mockReports[reportIndex].votes + 1,
-  }
-
-  mockReports[reportIndex] = updatedReport
 
   return updatedReport
 }
