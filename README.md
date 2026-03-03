@@ -183,6 +183,31 @@ VITE_MAP_TILE_URL=
 3. El cliente queda disponible en `src/shared/lib/supabase.ts`.
 4. El helper `src/shared/lib/env.ts` valida que las variables requeridas existan.
 
+### Requisitos para imágenes (Fase 4 · Paso 4)
+
+- Bucket de Storage: `report-images`.
+- Tabla recomendada: `report_images` con columnas mínimas:
+  - `report_id` (uuid),
+  - `user_id` (uuid, opcional),
+  - `storage_path` (text),
+  - `public_url` (text),
+  - `created_at` (timestamptz default now()).
+
+### Funciones por rol (Fase 4 · Paso 6)
+
+**Ciudadano**
+- Registrarse e iniciar/cerrar sesión.
+- Crear reportes.
+- Subir imágenes del reporte.
+- Votar/priorizar reportes.
+- Ver mapa, lista, estados y métricas públicas.
+
+**Autoridad**
+- Todo lo de ciudadano.
+- Cambiar estado de reportes (`nuevo`, `en_revision`, `en_proceso`, `resuelto`).
+- Gestionar flujo operativo de atención.
+- Consultar y priorizar zonas críticas para intervención.
+
 ---
 
 ## 10) Roadmap por fases
@@ -208,7 +233,7 @@ VITE_MAP_TILE_URL=
 - Métricas de zonas críticas.
 - PWA/offline parcial.
 
-### Fase 4 — Integración Supabase
+### Fase 4 — Integración Supabase ✅ COMPLETADA
 - Configurar proyecto Supabase y variables de entorno (`VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`).
 - Implementar autenticación real (registro, inicio de sesión y cierre de sesión).
 - Migrar datos mock de reportes a tablas reales (`reports`, `report_votes`, `report_status_history`).

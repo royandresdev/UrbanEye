@@ -1,6 +1,8 @@
+import { useEffect } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { getReports, updateReportStatus, voteReport } from './reportsApi'
+import { createReport, getReports, updateReportStatus, voteReport } from './reportsApi'
 import type { ReportItem, ReportStatus } from './reportsTypes'
+import { supabase } from '../../shared/lib/supabase'
 
 export const reportsQueryKey = ['reports'] as const
 
@@ -8,6 +10,51 @@ export function useReports() {
   return useQuery({
     queryKey: reportsQueryKey,
     queryFn: getReports,
+  })
+}
+
+export function useReportsRealtime() {
+  const queryClient = useQueryClient()
+
+  useEffect(() => {
+    const invalidateReports = () => {
+      void queryClient.invalidateQueries({ queryKey: reportsQueryKey })
+    }
+
+    const channel = supabase
+      .channel('urbaneye-reports-realtime')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'reports' }, invalidateReports)
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'report_status_history' },
+        invalidateReports,
+      )
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'report_votes' },
+        invalidateReports,
+      )
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'report_images' },
+        invalidateReports,
+      )
+      .subscribe()
+
+    return () => {
+      void supabase.removeChannel(channel)
+    }
+  }, [queryClient])
+}
+
+export function useCreateReport() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: createReport,
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: reportsQueryKey })
+    },
   })
 }
 
