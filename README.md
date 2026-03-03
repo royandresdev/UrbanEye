@@ -246,7 +246,7 @@ VITE_MAP_TILE_URL=
 - Implementar tests para módulos clave: auth, reportes, votación y cambios de estado.
 - Configurar reporte de coverage con Vitest.
 - Establecer umbrales mínimos de cobertura (líneas, funciones, ramas y statements).
-- Integrar pruebas y coverage en flujo de CI/CD.
+- Integrar pruebas y coverage en flujo de CI/CD. ✅ COMPLETADO (`.github/workflows/ci.yml`)
 - Documentar comandos y criterios de calidad de pruebas en el README.
 
 ### Fase 5 · Paso 1 — Estrategia de pruebas (definición)
