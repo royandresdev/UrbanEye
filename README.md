@@ -172,9 +172,16 @@ Variables de entorno esperadas (ejemplo):
 
 ```env
 VITE_SUPABASE_URL=
-VITE_SUPABASE_ANON_KEY=
+VITE_SUPABASE_PUBLISHABLE_KEY=
 VITE_MAP_TILE_URL=
 ```
+
+### Setup inicial Supabase (Fase 4 · Paso 1)
+
+1. Copiar `.env.example` a `.env.local`.
+2. Completar `VITE_SUPABASE_URL` y `VITE_SUPABASE_PUBLISHABLE_KEY` desde tu proyecto Supabase.
+3. El cliente queda disponible en `src/shared/lib/supabase.ts`.
+4. El helper `src/shared/lib/env.ts` valida que las variables requeridas existan.
 
 ---
 
@@ -202,7 +209,7 @@ VITE_MAP_TILE_URL=
 - PWA/offline parcial.
 
 ### Fase 4 — Integración Supabase
-- Configurar proyecto Supabase y variables de entorno (`VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`).
+- Configurar proyecto Supabase y variables de entorno (`VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`).
 - Implementar autenticación real (registro, inicio de sesión y cierre de sesión).
 - Migrar datos mock de reportes a tablas reales (`reports`, `report_votes`, `report_status_history`).
 - Integrar subida de imágenes en Supabase Storage.
