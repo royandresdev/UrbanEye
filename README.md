@@ -249,14 +249,14 @@ VITE_MAP_TILE_URL=
 - Integrar pruebas y coverage en flujo de CI/CD. (`.github/workflows/ci.yml`)
 - Documentar comandos y criterios de calidad de pruebas en el README. 
 
-### Fase 7 — Interfaz de usuario final 🚧 EN PROGRESO
+### Fase 6 — Interfaz de usuario final 🚧 EN PROGRESO
 - Consolidar la interfaz final para uso ciudadano y de autoridades con enfoque mobile first.
 - Eliminar trazas de debug visibles en UI (`console` expuesto, placeholders técnicos, etiquetas temporales).
 - Retirar comentarios de apoyo visual incrustados en componentes (textos tipo “TODO”, “debug”, “test”).
 - Homogeneizar textos finales de botones, estados y mensajes para experiencia de producto.
 - Revisar vistas clave (`Auth`, `Reportes`, `Mapa`, `Detalle`) para asegurar acabado de interfaz sin artefactos de desarrollo.
 
-**Criterios de salida Fase 7**
+**Criterios de salida Fase 6**
 - Ninguna pantalla productiva muestra información de depuración.
 - No existen mensajes/comentarios temporales visibles para el usuario final.
 - La navegación principal y acciones críticas mantienen consistencia visual y textual.
