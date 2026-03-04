@@ -1,8 +1,9 @@
 @import 'tailwindcss';
+@import url('https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700;800&display=swap');
 
 :root {
   font-family:
-    Inter,
+    'Public Sans',
     system-ui,
     -apple-system,
     Segoe UI,
@@ -15,18 +16,24 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
+  --color-background: #102218;
   --color-brand-950: #031b15;
   --color-brand-900: #05241c;
   --color-brand-800: #0a3128;
   --color-accent-500: #1ce57b;
   --color-accent-600: #12c967;
 
-  --color-text-primary: #e7f4ee;
-  --color-text-secondary: #9ab2a8;
+  --color-button-bg-primary: #13ec6d;
+  --color-button-bg-secondary: #334155;
+
+  --color-text-primary: #f1f5f9;
+  --color-text-secondary: #94a3b8;
   --color-text-muted: #6f8a7f;
 
-  --color-input-bg: #082033;
-  --color-input-border: #11364a;
+  --color-input-bg-primary: hsl(145, 85, 50, 0.1);
+  --color-input-bg-secondary: hsl(222, 47, 11, 0.5);
+  --color-input-border-primary: hsl(145, 85, 50, 0.2);
+  --color-input-border-secondary: #1e293b;
 
   --color-success: #20d18f;
   --color-warning: #f6b94a;
@@ -36,8 +43,6 @@
   --radius-md: 12px;
   --radius-lg: 16px;
   --radius-xl: 20px;
-
-  --shadow-cta-glow: 0 10px 26px rgba(28, 229, 123, 0.32);
 }
 
 * {
