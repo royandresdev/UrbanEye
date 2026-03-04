@@ -4,30 +4,30 @@ export function HomePage() {
   return (
     <main className="mx-auto min-h-screen w-full max-w-md px-4 py-6">
       <header className="mb-6">
-        <p className="text-sm text-slate-600">Fase 1</p>
         <h1 className="text-2xl font-semibold text-slate-900">UrbanEye</h1>
+        <p className="mt-2 text-sm text-slate-600">Reporta incidencias urbanas y da seguimiento en tiempo real.</p>
       </header>
 
       <section className="space-y-3 rounded-xl bg-white p-4 shadow-sm">
-        <h2 className="text-base font-medium text-slate-900">MVP en progreso</h2>
-        <p className="text-sm text-slate-600">Avanza por pasos del módulo inicial.</p>
+        <h2 className="text-base font-medium text-slate-900">Acciones rápidas</h2>
+        <p className="text-sm text-slate-600">Accede a tu cuenta, registra un reporte o revisa incidencias activas.</p>
         <Link
           to="/auth"
           className="inline-flex w-full justify-center rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700"
         >
-          Paso 1: Auth básica
+          Acceder
         </Link>
         <Link
           to="/reports/new"
           className="inline-flex w-full justify-center rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white"
         >
-          Paso 2: Crear reporte
+          Crear reporte
         </Link>
         <Link
           to="/reports"
           className="inline-flex w-full justify-center rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700"
         >
-          Paso 3: Lista y mapa
+          Ver reportes
         </Link>
       </section>
     </main>

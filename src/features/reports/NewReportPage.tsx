@@ -103,7 +103,6 @@ export function NewReportPage() {
   return (
     <main className="mx-auto min-h-screen w-full max-w-md px-4 py-6">
       <header className="mb-6">
-        <p className="text-sm text-slate-600">Fase 1 · Paso 2</p>
         <div className="flex items-center justify-between gap-3">
           <h1 className="text-2xl font-semibold text-slate-900">Crear reporte</h1>
           <NotificationCenter />
@@ -189,7 +188,7 @@ export function NewReportPage() {
           </button>
 
           {isSubmitSuccessful ? (
-            <p className="text-sm text-slate-700">Reporte publicado correctamente en backend.</p>
+            <p className="text-sm text-slate-700">Reporte publicado correctamente.</p>
           ) : null}
         </form>
       </section>

@@ -88,7 +88,6 @@ export function AuthPage() {
     return (
       <main className="mx-auto min-h-screen w-full max-w-md px-4 py-6">
         <header className="mb-6">
-          <p className="text-sm text-slate-600">Fase 4 · Paso 2</p>
           <h1 className="text-2xl font-semibold text-slate-900">Sesión activa</h1>
           <p className="mt-2 text-sm text-slate-600">Has iniciado sesión en UrbanEye.</p>
         </header>
@@ -122,11 +121,8 @@ export function AuthPage() {
   return (
     <main className="mx-auto min-h-screen w-full max-w-md px-4 py-6">
       <header className="mb-6">
-        <p className="text-sm text-slate-600">Fase 4 · Paso 2</p>
         <h1 className="text-2xl font-semibold text-slate-900">Acceso a UrbanEye</h1>
-        <p className="mt-2 text-sm text-slate-600">
-          Inicia sesión o crea una cuenta real con Supabase.
-        </p>
+        <p className="mt-2 text-sm text-slate-600">Inicia sesión o crea tu cuenta para reportar incidencias.</p>
       </header>
 
       <div className="mb-4 grid grid-cols-2 rounded-lg bg-slate-100 p-1">
