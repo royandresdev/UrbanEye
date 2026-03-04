@@ -262,6 +262,45 @@ VITE_MAP_TILE_URL=
 - La navegación principal y acciones críticas mantienen consistencia visual y textual.
 - Se validan manualmente los flujos principales en móvil y desktop.
 
+### Fase 7 — Implementación UI según Figma 🚧 EN PROGRESO
+**Paso 1 — Extraer Design Tokens de Figma**
+- Definir paleta (primario, secundarios, fondo, texto, éxito, warning, error).
+- Definir tipografías, tamaños, pesos, radios, bordes, sombras y espaciados.
+- Documentar tokens en una tabla base antes de tocar componentes.
+
+**Paso 2 — Configurar colores/tokens en Tailwind**
+- Como el proyecto usa `@import 'tailwindcss'` en `src/index.css` (sin `tailwind.config`), declarar tokens CSS en `:root` (por ejemplo `--color-primary`, `--color-bg`, etc.) y usarlos con utilidades arbitrarias (`bg-[var(--color-primary)]`, `text-[var(--color-text)]`).
+- Si luego se agrega `tailwind.config`, mapear la misma paleta en `theme.extend.colors` para usar clases semánticas (`bg-brand-primary`, `text-brand-muted`).
+- Evitar colores hardcodeados nuevos fuera del sistema de tokens.
+
+**Paso 3 — Base global de UI**
+- Ajustar `src/index.css` con variables globales, tipografía base y color de fondo principal.
+- Unificar estilos de foco (`focus-visible`), estados disabled y contraste mínimo.
+
+**Paso 4 — Implementar Auth según Figma**
+- Replicar layout mobile (hero, título, formulario, CTA principal y enlaces secundarios).
+- Mantener reglas funcionales de sesión (login, registro, logout y estado de sesión activa).
+- Validar que `/` muestre autenticación cuando no existe sesión.
+
+**Paso 5 — Aplicar diseño a Reportes (lista/mapa/detalle)**
+- Migrar tarjetas, filtros, badges de estado y botones al nuevo sistema visual.
+- Mantener restricciones por rol (`ciudadano` vs `autoridad`) sin cambios de lógica.
+
+**Paso 6 — Estados de UI consistentes**
+- Normalizar vistas de `loading`, `empty`, `error` y `success` en pantallas principales.
+- Alinear notificaciones y mensajes de feedback al tono visual de Figma.
+
+**Paso 7 — QA visual y regresión funcional**
+- Checklist visual por pantalla contra Figma (spacing, color, tipografía, jerarquía).
+- Pruebas mínimas: `npm run test -- src/features/auth/AuthPage.test.tsx` y `npm run test -- src/features/reports/ReportsOverviewPage.test.tsx`.
+- Validación responsive en móvil y desktop antes de marcar cierre de fase.
+
+**Criterios de salida Fase 7**
+- Pantallas principales alineadas visualmente con Figma.
+- Estados de UI (vacío, carga, error, éxito) con estilo consistente.
+- Navegación y acciones críticas conservan usabilidad y accesibilidad básica.
+- No hay regresiones funcionales en pruebas de auth y reportes.
+
 ### Fase 5 · Paso 1 — Estrategia de pruebas (definición)
 
 **Objetivo inicial**
