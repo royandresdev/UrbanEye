@@ -15,8 +15,10 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
 
-  --color-background: #102218;
+@theme {
+  --color-base: #102218;
   --color-brand-950: #031b15;
   --color-brand-900: #05241c;
   --color-brand-800: #0a3128;
@@ -26,14 +28,14 @@
   --color-button-bg-primary: #13ec6d;
   --color-button-bg-secondary: #334155;
 
-  --color-text-primary: #f1f5f9;
-  --color-text-secondary: #94a3b8;
-  --color-text-muted: #6f8a7f;
+  --color-fg-primary: #f1f5f9;
+  --color-fg-secondary: #94a3b8;
+  --color-fg-muted: #6f8a7f;
 
-  --color-input-bg-primary: hsl(145, 85, 50, 0.1);
-  --color-input-bg-secondary: hsl(222, 47, 11, 0.5);
-  --color-input-border-primary: hsl(145, 85, 50, 0.2);
-  --color-input-border-secondary: #1e293b;
+  --color-field-bg-primary: #13ec6d1a;
+  --color-field-bg-secondary: #0f172980;
+  --color-field-border-primary: #13ec6d33;
+  --color-field-border-secondary: #1e293b;
 
   --color-success: #20d18f;
   --color-warning: #f6b94a;

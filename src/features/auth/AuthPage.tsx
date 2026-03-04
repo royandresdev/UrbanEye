@@ -3,14 +3,11 @@ import { Link } from 'react-router-dom'
 import type { Session } from '@supabase/supabase-js'
 import { supabase } from '../../shared/lib/supabase'
 import { useNotifications } from '../../shared/notifications/useNotifications'
-import { AuthModeSwitch } from './components/AuthModeSwitch'
 import { AuthSessionActiveView } from './components/AuthSessionActiveView'
 import { AuthSessionCheckingView } from './components/AuthSessionCheckingView'
 import { LoginForm } from './components/LoginForm'
-import { RegisterForm } from './components/RegisterForm'
 
 export function AuthPage() {
-  const [mode, setMode] = useState<'login' | 'register'>('login')
   const [session, setSession] = useState<Session | null>(null)
   const [isCheckingSession, setIsCheckingSession] = useState(true)
   const [isSigningOut, setIsSigningOut] = useState(false)
@@ -88,21 +85,24 @@ export function AuthPage() {
   }
 
   return (
-    <main className="mx-auto min-h-screen w-full max-w-md px-4 py-6">
+    <main className="mx-auto min-h-screen w-full max-w-md px-6 py-6 bg-base">
       <header className="mb-6">
-        <h1 className="text-2xl font-semibold text-slate-900">Acceso a UrbanEye</h1>
-        <p className="mt-2 text-sm text-slate-600">Inicia sesión o crea tu cuenta para reportar incidencias.</p>
+        <p className="text-xl font-semibold text-fg-primary text-center">URBANEYE</p>
       </header>
 
-      <AuthModeSwitch mode={mode} onModeChange={setMode} />
+      <div className='w-full aspect-video bg-fg-primary rounded-md mb-6'>
+        <img src="/lima.jpg" alt="Vista de la ciudad de Lima" className="w-full h-full object-cover rounded-md" />
+      </div>
+      <h1 className='text-fg-primary text-3xl mb-2 font-bold'>Mejora tu ciudad</h1>
+      <p className='text-fg-secondary mb-6'>
+        Inicie sesión para informar problemas de infraestructura y realizar un seguimiento del progreso en tiempo real.
+      </p>
+      <LoginForm />
 
-      <section className="rounded-xl bg-white p-4 shadow-sm">
-        {mode === 'login' ? <LoginForm /> : <RegisterForm onRegistered={() => setMode('login')} />}
-      </section>
-
-      <p className="mt-4 text-center text-sm text-slate-600">
-        <Link to="/" className="font-medium text-slate-900 underline">
-          Volver al inicio
+      <p className='text-fg-secondary text-center mt-10'>
+        ¿No tienes un cuenta?
+        <Link to="/auth/signup" className="ml-1 font-medium text-accent-500">
+          Crear cuenta
         </Link>
       </p>
     </main>

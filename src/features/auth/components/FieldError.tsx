@@ -8,10 +8,10 @@ type FieldErrorProps = {
 
 export function FieldError({ label, error, children }: FieldErrorProps) {
   return (
-    <label className="block text-sm text-slate-700">
+    <label className="block text-sm text-fg-primary mb-4">
       <span>{label}</span>
       {children}
-      {error ? <p className="mt-1 text-xs text-red-600">{error}</p> : null}
+      {error ? <p className="mt-1 text-xs text-error">{error}</p> : null}
     </label>
   )
 }
