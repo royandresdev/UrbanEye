@@ -159,13 +159,7 @@ export async function createReport(input: CreateReportInput): Promise<ReportItem
     reportImagePayload.user_id = user.id
   }
 
-  const { error: reportImageError } = await supabase
-    .from('report_images')
-    .insert(reportImagePayload)
-
-  if (reportImageError) {
-    console.warn('[Supabase] No se pudo registrar report_images:', reportImageError.message)
-  }
+  await supabase.from('report_images').insert(reportImagePayload)
 
   return {
     id: insertedReport.id,

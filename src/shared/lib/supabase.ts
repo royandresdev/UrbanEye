@@ -11,17 +11,3 @@ export const supabase = createClient(supabaseUrl, supabasePublishableKey, {
     detectSessionInUrl: true,
   },
 })
-
-console.log('[Supabase] Cliente inicializado', {
-  url: supabaseUrl,
-  hasPublishableKey: Boolean(supabasePublishableKey),
-})
-
-void supabase.auth.getSession().then(({ error }) => {
-  if (error) {
-    console.error('[Supabase] Error de conexión inicial', error.message)
-    return
-  }
-
-  console.log('[Supabase] Conexión inicial OK')
-})
