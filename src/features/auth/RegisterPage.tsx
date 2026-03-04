@@ -1,17 +1,18 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import type { Session } from '@supabase/supabase-js'
 import { supabase } from '../../shared/lib/supabase'
 import { useNotifications } from '../../shared/notifications/useNotifications'
 import { AuthSessionActiveView } from './components/AuthSessionActiveView'
 import { AuthSessionCheckingView } from './components/AuthSessionCheckingView'
-import { LoginForm } from './components/LoginForm'
+import { RegisterForm } from './components/RegisterForm'
 
-export function AuthPage() {
+export function RegisterPage() {
   const [session, setSession] = useState<Session | null>(null)
   const [isCheckingSession, setIsCheckingSession] = useState(true)
   const [isSigningOut, setIsSigningOut] = useState(false)
   const { addNotification } = useNotifications()
+  const navigate = useNavigate()
 
   useEffect(() => {
     let isMounted = true
@@ -90,19 +91,19 @@ export function AuthPage() {
         <p className="text-xl font-semibold text-fg-primary text-center">URBANEYE</p>
       </header>
 
-      <div className='w-full aspect-video bg-fg-primary rounded-md mb-6'>
-        <img src="/lima.jpg" alt="Vista de la ciudad de Lima" className="w-full h-full object-cover rounded-md" />
-      </div>
-      <h1 className='text-fg-primary text-3xl mb-2 font-bold'>Mejora tu ciudad</h1>
-      <p className='text-fg-secondary mb-6'>
-        Inicie sesión para informar problemas de infraestructura y realizar un seguimiento del progreso en tiempo real.
-      </p>
-      <LoginForm />
+      <h1 className="mb-2 text-3xl font-bold text-fg-primary">Crear cuenta</h1>
+      <p className="mb-6 text-fg-secondary">Regístrate para comenzar a reportar incidencias urbanas.</p>
 
-      <p className='text-fg-secondary text-center mt-10'>
-        ¿No tienes un cuenta?
-        <Link to="/auth/signup" className="ml-1 font-medium text-accent-500">
-          Crear cuenta
+      <RegisterForm
+        onRegistered={() => {
+          navigate('/auth')
+        }}
+      />
+
+      <p className="mt-10 text-center text-fg-secondary">
+        ¿Ya tienes una cuenta?
+        <Link to="/auth" className="ml-1 font-medium text-accent-500">
+          Iniciar sesión
         </Link>
       </p>
     </main>

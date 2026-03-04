@@ -1,5 +1,6 @@
 import { createBrowserRouter } from 'react-router-dom'
-import { AuthPage } from '../../features/auth/AuthPage'
+import { LoginPage } from '../../features/auth/LoginPage'
+import { RegisterPage } from '../../features/auth/RegisterPage'
 import { HomePage } from '../../features/home/HomePage'
 import { NewReportPage } from '../../features/reports/NewReportPage'
 import { ReportsOverviewPage } from '../../features/reports/ReportsOverviewPage'
@@ -11,7 +12,11 @@ export const appRouter = createBrowserRouter([
   },
   {
     path: '/auth',
-    element: <AuthPage />,
+    element: <LoginPage />,
+  },
+  {
+    path: '/auth/signup',
+    element: <RegisterPage />,
   },
   {
     path: '/reports/new',

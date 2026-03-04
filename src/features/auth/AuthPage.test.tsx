@@ -2,7 +2,8 @@ import { MemoryRouter } from 'react-router-dom'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { AuthPage } from './AuthPage'
+import { LoginPage } from './LoginPage'
+import { RegisterPage } from './RegisterPage'
 
 const {
   addNotificationMock,
@@ -41,7 +42,7 @@ vi.mock('../../shared/notifications/useNotifications', () => ({
   }),
 }))
 
-describe('AuthPage', () => {
+describe('LoginPage', () => {
   beforeEach(() => {
     vi.clearAllMocks()
 
@@ -67,17 +68,16 @@ describe('AuthPage', () => {
   it('inicia sesión correctamente y notifica éxito', async () => {
     render(
       <MemoryRouter>
-        <AuthPage />
+        <LoginPage />
       </MemoryRouter>
     )
 
-    await screen.findByRole('heading', { name: /acceso a urbaneye/i })
-    expect(screen.queryByText(/fase|paso/i)).not.toBeInTheDocument()
+    await screen.findByRole('heading', { name: /mejora tu ciudad/i })
 
-    await userEvent.type(screen.getByLabelText('Correo'), 'ciudadano@urbaneye.app')
+    await userEvent.type(screen.getByLabelText('Correo Electrónico'), 'ciudadano@urbaneye.app')
     await userEvent.type(screen.getByLabelText('Contraseña'), 'secreto123')
 
-    await userEvent.click(screen.getByRole('button', { name: 'Continuar' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Iniciar Sesión' }))
 
     await waitFor(() => {
       expect(signInWithPasswordMock).toHaveBeenCalledWith({
@@ -101,16 +101,16 @@ describe('AuthPage', () => {
 
     render(
       <MemoryRouter>
-        <AuthPage />
+        <LoginPage />
       </MemoryRouter>
     )
 
-    await screen.findByRole('heading', { name: /acceso a urbaneye/i })
+    await screen.findByRole('heading', { name: /mejora tu ciudad/i })
 
-    await userEvent.type(screen.getByLabelText('Correo'), 'pendiente@urbaneye.app')
+    await userEvent.type(screen.getByLabelText('Correo Electrónico'), 'pendiente@urbaneye.app')
     await userEvent.type(screen.getByLabelText('Contraseña'), 'secreto123')
 
-    await userEvent.click(screen.getByRole('button', { name: 'Continuar' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Iniciar Sesión' }))
 
     await screen.findByRole('button', { name: 'Reenviar correo de confirmación' })
 
@@ -138,16 +138,72 @@ describe('AuthPage', () => {
     )
   })
 
-  it('registra un usuario nuevo y vuelve a modo login', async () => {
+  it('muestra sesión activa y permite cerrar sesión', async () => {
+    getSessionMock.mockResolvedValueOnce({
+      data: {
+        session: {
+          user: {
+            email: 'activa@urbaneye.app',
+          },
+        },
+      },
+      error: null,
+    })
+
     render(
       <MemoryRouter>
-        <AuthPage />
+        <LoginPage />
       </MemoryRouter>
     )
 
-    await screen.findByRole('heading', { name: /acceso a urbaneye/i })
+    await screen.findByRole('heading', { name: /sesión activa/i })
 
-    await userEvent.click(screen.getByRole('button', { name: 'Registrarme' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Cerrar sesión' }))
+
+    await waitFor(() => {
+      expect(signOutMock).toHaveBeenCalledTimes(1)
+    })
+
+    expect(addNotificationMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        title: 'Sesión cerrada',
+        level: 'info',
+      })
+    )
+  })
+})
+
+describe('RegisterPage', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+
+    getSessionMock.mockResolvedValue({
+      data: { session: null },
+      error: null,
+    })
+
+    onAuthStateChangeMock.mockReturnValue({
+      data: {
+        subscription: {
+          unsubscribe: vi.fn(),
+        },
+      },
+    })
+
+    signOutMock.mockResolvedValue({ error: null })
+    signInWithPasswordMock.mockResolvedValue({ error: null })
+    resendMock.mockResolvedValue({ error: null })
+    signUpMock.mockResolvedValue({ error: null })
+  })
+
+  it('registra un usuario nuevo', async () => {
+    render(
+      <MemoryRouter>
+        <RegisterPage />
+      </MemoryRouter>
+    )
+
+    await screen.findByRole('heading', { name: /crear cuenta/i })
 
     await userEvent.type(screen.getByLabelText('Nombre completo'), 'Ana Barrio')
     await userEvent.type(screen.getByLabelText('Correo'), 'ana@urbaneye.app')
@@ -172,42 +228,6 @@ describe('AuthPage', () => {
       expect.objectContaining({
         title: 'Cuenta creada',
         level: 'success',
-      })
-    )
-
-    await screen.findByRole('button', { name: 'Continuar' })
-  })
-
-  it('muestra sesión activa y permite cerrar sesión', async () => {
-    getSessionMock.mockResolvedValueOnce({
-      data: {
-        session: {
-          user: {
-            email: 'activa@urbaneye.app',
-          },
-        },
-      },
-      error: null,
-    })
-
-    render(
-      <MemoryRouter>
-        <AuthPage />
-      </MemoryRouter>
-    )
-
-    await screen.findByRole('heading', { name: /sesión activa/i })
-
-    await userEvent.click(screen.getByRole('button', { name: 'Cerrar sesión' }))
-
-    await waitFor(() => {
-      expect(signOutMock).toHaveBeenCalledTimes(1)
-    })
-
-    expect(addNotificationMock).toHaveBeenCalledWith(
-      expect.objectContaining({
-        title: 'Sesión cerrada',
-        level: 'info',
       })
     )
   })
