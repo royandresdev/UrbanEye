@@ -264,9 +264,9 @@ export async function getCurrentUserRole(): Promise<UserRole> {
   }
 
   const { data, error } = await supabase
-    .from('user_roles')
+    .from('profiles')
     .select('role')
-    .eq('user_id', user.id)
+    .eq('id', user.id)
     .maybeSingle<{ role: UserRole }>()
 
   if (error || !data?.role) {
