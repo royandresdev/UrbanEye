@@ -317,3 +317,46 @@ VITE_MAP_TILE_URL=
 - Tiempos de carga optimizados para red móvil.
 - Validaciones en cliente y servidor.
 - Manejo de errores y estados vacíos.
+
+---
+
+## 12) Flujo de la aplicación
+
+### Flujo principal (end-to-end)
+
+1. El usuario entra a la app y se autentica (registro o inicio de sesión).
+2. Crea un reporte con categoría, descripción, foto y ubicación.
+3. El reporte se publica con estado inicial `nuevo` y aparece en lista/mapa.
+4. La comunidad puede votar (`Me afecta +1`) para aumentar prioridad.
+5. Una autoridad toma el reporte y lo mueve por el flujo operativo.
+6. El reporte finaliza en `resuelto` y queda visible como histórico.
+
+### Flujo ciudadano
+
+1. **Acceso**: iniciar sesión o registrarse.
+2. **Crear reporte**: completar formulario, adjuntar foto y ubicación.
+3. **Seguimiento**: consultar estado actual en lista y mapa.
+4. **Priorizar**: votar reportes que le afectan (1 voto por usuario por reporte).
+5. **Notificaciones**: recibir confirmaciones y mensajes de éxito/error en acciones clave.
+
+### Flujo autoridad
+
+1. **Acceso**: iniciar sesión con rol `autoridad`.
+2. **Monitoreo**: revisar panel operativo (pendientes, en proceso, resueltos, alta prioridad).
+3. **Gestión**: actualizar estado del reporte según avance operativo.
+4. **Cierre**: marcar como `resuelto` cuando la incidencia fue atendida.
+
+### Ciclo de estados del reporte
+
+- `nuevo` → `en_revision` → `en_proceso` → `resuelto`
+
+Reglas funcionales:
+- Solo autoridad puede cambiar estado.
+- Ciudadano puede crear y votar, pero no cambiar estado.
+- Si un usuario ya votó un reporte, el botón de voto se desactiva.
+
+### Reglas de interfaz y navegación
+
+- Navegación principal: Inicio → Auth → Crear reporte / Ver reportes.
+- La interfaz oculta acciones operativas cuando el rol es `ciudadano`.
+- En cambio de sesión (ej. autoridad → ciudadano), la UI se re-renderiza y actualiza permisos visibles.
