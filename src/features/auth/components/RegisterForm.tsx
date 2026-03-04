@@ -60,7 +60,7 @@ export function RegisterForm({ onRegistered }: RegisterFormProps) {
           type="text"
           autoComplete="name"
           {...register('fullName')}
-          className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-slate-400 focus:outline-none"
+          className="input-secondary"
         />
       </FieldError>
 
@@ -69,7 +69,7 @@ export function RegisterForm({ onRegistered }: RegisterFormProps) {
           type="email"
           autoComplete="email"
           {...register('email')}
-          className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-slate-400 focus:outline-none"
+          className="input-secondary"
         />
       </FieldError>
 
@@ -78,7 +78,7 @@ export function RegisterForm({ onRegistered }: RegisterFormProps) {
           type="password"
           autoComplete="new-password"
           {...register('password')}
-          className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-slate-400 focus:outline-none"
+          className="input-secondary"
         />
       </FieldError>
 
@@ -87,14 +87,14 @@ export function RegisterForm({ onRegistered }: RegisterFormProps) {
           type="password"
           autoComplete="new-password"
           {...register('confirmPassword')}
-          className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-slate-400 focus:outline-none"
+          className="input-secondary"
         />
       </FieldError>
 
       <button
         type="submit"
         disabled={isSubmitting}
-        className="w-full rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-60"
+        className="mt-4 w-full btn-primary"
       >
         Crear cuenta
       </button>

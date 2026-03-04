@@ -97,7 +97,7 @@ export function LoginForm() {
           autoComplete="email"
           placeholder='ejemplo@correo.com'
           {...register('email')}
-          className="mt-1 w-full rounded-md bg-field-bg-secondary border border-field-border-secondary p-4 text-sm focus:border-field-border-primary focus:outline-none"
+          className="input-secondary"
         />
       </FieldError>
 
@@ -107,14 +107,14 @@ export function LoginForm() {
           autoComplete="current-password"
           placeholder='Ingresa tu contraseña'
           {...register('password')}
-          className="mt-1 w-full rounded-md bg-field-bg-secondary border border-field-border-secondary p-4 text-sm focus:border-field-border-primary focus:outline-none"
+          className="input-secondary"
         />
       </FieldError>
 
       <button
         type="submit"
         disabled={isSubmitting}
-        className="w-full mt-4 rounded-md bg-button-bg-primary px-4 py-3.5 text-sm text-base font-bold disabled:opacity-60"
+        className="w-full mt-4 btn-primary"
       >
         Iniciar Sesión
       </button>
