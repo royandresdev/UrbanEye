@@ -87,6 +87,8 @@ describe('ReportsOverviewPage - votación', () => {
       </MemoryRouter>,
     )
 
+    expect(screen.queryByText(/fase|paso/i)).not.toBeInTheDocument()
+
     const voteButton = screen.getByRole('button', { name: 'Me afecta +1' })
     expect(voteButton).toBeDisabled()
   })

@@ -72,6 +72,7 @@ describe('AuthPage', () => {
     )
 
     await screen.findByRole('heading', { name: /acceso a urbaneye/i })
+    expect(screen.queryByText(/fase|paso/i)).not.toBeInTheDocument()
 
     await userEvent.type(screen.getByLabelText('Correo'), 'ciudadano@urbaneye.app')
     await userEvent.type(screen.getByLabelText('Contraseña'), 'secreto123')
