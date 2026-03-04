@@ -10,12 +10,12 @@ export function HomePage() {
 
       <section className="space-y-3 rounded-xl bg-white p-4 shadow-sm">
         <h2 className="text-base font-medium text-slate-900">Acciones rápidas</h2>
-        <p className="text-sm text-slate-600">Accede a tu cuenta, registra un reporte o revisa incidencias activas.</p>
+        <p className="text-sm text-slate-600">Inicia sesión, registra un reporte o revisa incidencias activas.</p>
         <Link
           to="/auth"
           className="inline-flex w-full justify-center rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700"
         >
-          Acceder
+          Iniciar sesión
         </Link>
         <Link
           to="/reports/new"

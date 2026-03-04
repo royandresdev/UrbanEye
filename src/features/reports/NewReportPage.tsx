@@ -95,7 +95,7 @@ export function NewReportPage() {
 
     addNotification({
       title: 'Reporte recibido',
-      message: 'Tu incidencia fue registrada en Supabase con estado Nuevo.',
+      message: 'Tu incidencia fue registrada con estado Nuevo.',
       level: 'success',
     })
   }
@@ -195,7 +195,7 @@ export function NewReportPage() {
 
       <p className="mt-4 text-center text-sm text-slate-600">
         <Link to="/reports" className="font-medium text-slate-900 underline">
-          Ver lista y mapa
+          Ver reportes
         </Link>
         <span className="mx-2 text-slate-400">·</span>
         <Link to="/" className="font-medium text-slate-900 underline">

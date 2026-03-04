@@ -12,7 +12,7 @@ describe('HomePage', () => {
     )
 
     expect(screen.getByRole('heading', { name: 'UrbanEye' })).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: /acceder/i })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /iniciar sesión/i })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: /crear reporte/i })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: /ver reportes/i })).toBeInTheDocument()
 
