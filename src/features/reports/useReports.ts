@@ -1,15 +1,29 @@
 import { useEffect } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { createReport, getReports, updateReportStatus, voteReport } from './reportsApi'
+import {
+  createReport,
+  getCurrentUserRole,
+  getReports,
+  updateReportStatus,
+  voteReport,
+} from './reportsApi'
 import type { ReportItem, ReportStatus } from './reportsTypes'
 import { supabase } from '../../shared/lib/supabase'
 
 export const reportsQueryKey = ['reports'] as const
+export const currentUserRoleQueryKey = ['current-user-role'] as const
 
 export function useReports() {
   return useQuery({
     queryKey: reportsQueryKey,
     queryFn: getReports,
+  })
+}
+
+export function useCurrentUserRole() {
+  return useQuery({
+    queryKey: currentUserRoleQueryKey,
+    queryFn: getCurrentUserRole,
   })
 }
 

@@ -1,6 +1,8 @@
 import type { ReportItem } from './reportsTypes'
 import { supabase } from '../../shared/lib/supabase'
 
+export type UserRole = 'ciudadano' | 'autoridad'
+
 type ReportRow = {
   id: string
   category: ReportItem['category']
@@ -250,6 +252,28 @@ export async function updateReportStatus({
 
 type VoteReportInput = {
   reportId: string
+}
+
+export async function getCurrentUserRole(): Promise<UserRole> {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  if (!user?.id) {
+    return 'ciudadano'
+  }
+
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('role')
+    .eq('id', user.id)
+    .maybeSingle<{ role: UserRole }>()
+
+  if (error || !data?.role) {
+    return 'ciudadano'
+  }
+
+  return data.role
 }
 
 export async function voteReport({ reportId }: VoteReportInput): Promise<ReportItem> {
