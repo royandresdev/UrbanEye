@@ -1,7 +1,7 @@
 import { createBrowserRouter, redirect } from 'react-router-dom'
 import { LoginPage } from '../../features/auth/LoginPage'
 import { RegisterPage } from '../../features/auth/RegisterPage'
-import { HomePage } from '../../features/home/HomePage'
+//import { HomePage } from '../../features/home/HomePage'
 import { NewReportPage } from '../../features/reports/NewReportPage'
 import { ReportsOverviewPage } from '../../features/reports/ReportsOverviewPage'
 import { supabase } from '../../shared/lib/supabase'
@@ -21,11 +21,6 @@ async function requireAuth() {
 
 export const appRouter = createBrowserRouter([
   {
-    path: '/',
-    loader: requireAuth,
-    element: <HomePage />,
-  },
-  {
     path: '/auth',
     element: <LoginPage />,
   },
@@ -39,7 +34,7 @@ export const appRouter = createBrowserRouter([
     element: <NewReportPage />,
   },
   {
-    path: '/reports',
+    path: '/',
     loader: requireAuth,
     element: <ReportsOverviewPage />,
   },

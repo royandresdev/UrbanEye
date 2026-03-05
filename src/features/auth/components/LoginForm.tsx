@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { type LoginFormValues, loginSchema } from '../authSchemas'
@@ -7,6 +8,7 @@ import { useNotifications } from '../../../shared/notifications/useNotifications
 import { FieldError } from './FieldError'
 
 export function LoginForm() {
+  const navigate = useNavigate()
   const { addNotification } = useNotifications()
   const [emailPendingConfirmation, setEmailPendingConfirmation] = useState<string | null>(null)
   const [isResendingConfirmation, setIsResendingConfirmation] = useState(false)
@@ -57,6 +59,8 @@ export function LoginForm() {
       message: 'Inicio de sesión correcto.',
       level: 'success',
     })
+
+    navigate('/')
   }
 
   const handleResendConfirmation = async () => {
