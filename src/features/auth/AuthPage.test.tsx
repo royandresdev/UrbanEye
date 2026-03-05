@@ -138,6 +138,27 @@ describe('LoginPage', () => {
     )
   })
 
+  it('muestra en la UI que debes verificar tu correo antes de iniciar sesión', async () => {
+    signInWithPasswordMock.mockResolvedValueOnce({
+      error: { message: 'Email not confirmed' },
+    })
+
+    render(
+      <MemoryRouter>
+        <LoginPage />
+      </MemoryRouter>
+    )
+
+    await screen.findByRole('heading', { name: /mejora tu ciudad/i })
+
+    await userEvent.type(screen.getByLabelText('Correo Electrónico'), 'pendiente@urbaneye.app')
+    await userEvent.type(screen.getByLabelText('Contraseña'), 'secreto123')
+
+    await userEvent.click(screen.getByRole('button', { name: 'Iniciar Sesión' }))
+
+    expect(await screen.findByText(/Tu correo aún no está confirmado. Revisa tu bandeja de entrada o reenvía la confirmación./i)).toBeInTheDocument()
+  })
+
   it('muestra sesión activa y permite cerrar sesión', async () => {
     getSessionMock.mockResolvedValueOnce({
       data: {
