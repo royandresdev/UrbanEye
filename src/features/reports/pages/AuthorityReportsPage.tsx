@@ -112,7 +112,7 @@ export function AuthorityReportsPage() {
           {!isLoading && !isError ? (
             <ul className="space-y-3">
               {priorityReports.map((report) => {
-                const isPending = report.status === 'nuevo' || report.status === 'en_revision'
+                const radioName = `status-${report.id}`
 
                 return (
                   <li key={report.id} className="rounded-2xl border border-field-border-secondary bg-field-bg-secondary p-3">
@@ -147,34 +147,46 @@ export function AuthorityReportsPage() {
                         {statusLabel[report.status]}
                       </p>
 
-                      {isPending ? (
-                        <button
-                          type="button"
-                          onClick={() => {
-                            if (report.status === 'nuevo') {
+                      <div className="flex items-center gap-3 rounded-xl border border-field-border-secondary bg-field-bg-primary px-3 py-2 text-xs text-fg-primary">
+                        <label className="inline-flex items-center gap-1.5">
+                          <input
+                            type="radio"
+                            name={radioName}
+                            checked={report.status === 'en_revision'}
+                            onChange={() => {
                               handleTakeReport(report)
-                              return
-                            }
+                            }}
+                            className="h-3.5 w-3.5 accent-accent-500"
+                          />
+                          Tomar
+                        </label>
 
-                            handleStartReport(report)
-                          }}
-                          className="rounded-xl bg-accent-500 px-4 py-2 text-sm font-semibold text-brand-950"
-                        >
-                          Cambiar Estado
-                        </button>
-                      ) : (
-                        <button
-                          type="button"
-                          onClick={() => {
-                            if (report.status === 'en_proceso') {
+                        <label className="inline-flex items-center gap-1.5">
+                          <input
+                            type="radio"
+                            name={radioName}
+                            checked={report.status === 'en_proceso'}
+                            onChange={() => {
+                              handleStartReport(report)
+                            }}
+                            className="h-3.5 w-3.5 accent-accent-500"
+                          />
+                          Iniciar
+                        </label>
+
+                        <label className="inline-flex items-center gap-1.5">
+                          <input
+                            type="radio"
+                            name={radioName}
+                            checked={report.status === 'resuelto'}
+                            onChange={() => {
                               handleResolveReport(report)
-                            }
-                          }}
-                          className="rounded-xl border border-field-border-secondary bg-field-bg-primary px-4 py-2 text-sm font-semibold text-fg-primary"
-                        >
-                          Ver Detalles
-                        </button>
-                      )}
+                            }}
+                            className="h-3.5 w-3.5 accent-accent-500"
+                          />
+                          Resolver
+                        </label>
+                      </div>
                     </div>
 
                     <div className="sr-only">
