@@ -33,15 +33,29 @@ export function ReportListItem({
   onResolve,
   onVote,
 }: ReportListItemProps) {
+  const relativeTime = formatDistanceToNow(new Date(report.createdAt), {
+    addSuffix: true,
+    locale: es,
+  })
+
   return (
-    <li key={report.id} className="rounded-lg border border-slate-200 p-3">
-      <div className="mb-2 flex items-center justify-between gap-2">
-        <span className="text-sm font-medium text-slate-900">{categoryLabel[report.category]}</span>
-        <span className={`rounded-full px-2 py-1 text-xs font-medium ${statusBadgeClass[report.status]}`}>
-          {statusLabel[report.status]}
-        </span>
+    <li className="rounded-xl border border-field-border-secondary bg-field-bg-secondary p-4">
+      <div className="flex gap-3">
+        <div className="h-20 w-20 shrink-0 rounded-lg border border-field-border-secondary bg-brand-900" />
+
+        <div className="min-w-0 flex-1">
+          <div className="mb-2 flex items-center justify-between gap-2">
+            <span className={`rounded-md px-2 py-1 text-xs font-bold uppercase ${statusBadgeClass[report.status]}`}>
+              {statusLabel[report.status]}
+            </span>
+            <span className="text-xs text-fg-muted">{relativeTime}</span>
+          </div>
+
+          <p className="line-clamp-2 text-3xl font-semibold text-fg-primary">{report.description}</p>
+          <p className="mt-1 line-clamp-1 text-sm text-fg-secondary">{report.address || categoryLabel[report.category]}</p>
+        </div>
       </div>
-      <p className="text-sm text-slate-700">{report.description}</p>
+
       {isAuthority ? (
         <AuthorityStatusControls
           report={report}
@@ -54,18 +68,7 @@ export function ReportListItem({
         />
       ) : null}
 
-      <VoteControl
-        report={report}
-        isPendingForReport={isVotePendingForReport}
-        onVote={onVote}
-      />
-
-      <p className="mt-1 text-xs text-slate-500">
-        {formatDistanceToNow(new Date(report.createdAt), {
-          addSuffix: true,
-          locale: es,
-        })}
-      </p>
+      <VoteControl report={report} isPendingForReport={isVotePendingForReport} onVote={onVote} />
     </li>
   )
 }

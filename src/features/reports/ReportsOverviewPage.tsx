@@ -38,6 +38,7 @@ export function ReportsOverviewPage() {
   const [selectedDistance, setSelectedDistance] = useState<DistanceFilter>('all')
   const [userLocation, setUserLocation] = useState<{ latitude: number; longitude: number } | null>(null)
   const [locationError, setLocationError] = useState<string | null>(null)
+  const [showCitizenMap, setShowCitizenMap] = useState(false)
 
   const { filteredReports, operationalSummary, criticalZones, center } = useReportsViewModel({
     reports,
@@ -164,6 +165,115 @@ export function ReportsOverviewPage() {
     )
   }
 
+  const newReportsCount = reports.filter((report) => report.status === 'nuevo').length
+  const inProgressReportsCount = reports.filter((report) => report.status === 'en_proceso').length
+  const resolvedReportsCount = reports.filter((report) => report.status === 'resuelto').length
+
+  const citizenRecentReports = [...filteredReports].slice(0, 6)
+
+  if (!isAuthority) {
+    return (
+      <main className="mx-auto min-h-screen w-full max-w-md bg-base px-4 py-4 text-fg-primary">
+        <header className="mb-4 flex items-center justify-between border-b border-field-border-secondary pb-3">
+          <button
+            type="button"
+            className="rounded-md border border-field-border-secondary bg-field-bg-secondary px-2 py-1 text-fg-secondary"
+          >
+            ☰
+          </button>
+          <h1 className="text-2xl font-semibold">Panel del Ciudadano</h1>
+          <div className="flex h-10 w-10 items-center justify-center rounded-full border border-field-border-secondary bg-field-bg-secondary text-fg-secondary">
+            👤
+          </div>
+        </header>
+
+        <section className="mb-4 grid grid-cols-3 gap-3">
+          <article className="rounded-xl border border-field-border-secondary bg-field-bg-secondary p-3">
+            <p className="text-xs font-semibold uppercase tracking-wide text-fg-muted">Nuevos</p>
+            <p className="mt-2 text-5xl font-bold text-fg-primary">{newReportsCount}</p>
+          </article>
+          <article className="rounded-xl border border-field-border-secondary bg-field-bg-secondary p-3">
+            <p className="text-xs font-semibold uppercase tracking-wide text-fg-muted">En proceso</p>
+            <p className="mt-2 text-5xl font-bold text-accent-500">{inProgressReportsCount}</p>
+          </article>
+          <article className="rounded-xl border border-field-border-secondary bg-field-bg-secondary p-3">
+            <p className="text-xs font-semibold uppercase tracking-wide text-fg-muted">Resueltos</p>
+            <p className="mt-2 text-5xl font-bold text-fg-primary">{resolvedReportsCount}</p>
+          </article>
+        </section>
+
+        <Link to="/reports/new" className="btn-primary mb-6 inline-flex w-full items-center justify-center gap-2">
+          <span aria-hidden>⊕</span>
+          Reportar Problema
+        </Link>
+
+        <section>
+          <div className="mb-3 flex items-center justify-between">
+            <h2 className="text-4xl font-semibold text-fg-primary">Reportes Recientes</h2>
+            <button
+              type="button"
+              onClick={() => {
+                setShowCitizenMap((current) => !current)
+              }}
+              className="text-2xl font-medium text-accent-500"
+            >
+              {showCitizenMap ? 'Ocultar mapa' : 'Ver Mapa'}
+            </button>
+          </div>
+
+          {showCitizenMap ? (
+            <ReportsMapPanel
+              center={center}
+              reports={filteredReports}
+              categoryLabel={categoryLabel}
+              statusMarkerColor={statusMarkerColor}
+            />
+          ) : null}
+
+          {isLoading ? <p className="text-sm text-fg-secondary">Cargando reportes...</p> : null}
+          {isError ? <p className="text-sm text-error">No fue posible cargar los reportes.</p> : null}
+
+          {!isLoading && !isError ? (
+            <ul className="space-y-3">
+              {citizenRecentReports.map((report) => (
+                <ReportListItem
+                  key={report.id}
+                  report={report}
+                  isAuthority={false}
+                  categoryLabel={categoryLabel}
+                  statusLabel={statusLabel}
+                  statusBadgeClass={statusBadgeClass}
+                  isUpdatePendingForReport={false}
+                  isVotePendingForReport={
+                    voteReportMutation.isPending && voteReportMutation.variables?.reportId === report.id
+                  }
+                  onStatusChange={handleStatusChange}
+                  onTake={handleTakeReport}
+                  onStart={handleStartReport}
+                  onResolve={handleResolveReport}
+                  onVote={handleVoteReport}
+                />
+              ))}
+              {citizenRecentReports.length === 0 ? (
+                <li className="rounded-xl border border-field-border-secondary bg-field-bg-secondary p-4 text-sm text-fg-secondary">
+                  No hay reportes recientes para mostrar.
+                </li>
+              ) : null}
+            </ul>
+          ) : null}
+        </section>
+
+        <nav className="mt-8 grid grid-cols-3 border-t border-field-border-secondary pt-3 text-center text-xs text-fg-muted">
+          <button type="button" className="font-semibold text-accent-500">
+            Inicio
+          </button>
+          <button type="button">Explorar</button>
+          <button type="button">Mis reportes</button>
+        </nav>
+      </main>
+    )
+  }
+
   return (
     <main className="mx-auto min-h-screen w-full max-w-md px-4 py-6">
       <ReportsHeader />
@@ -188,7 +298,7 @@ export function ReportsOverviewPage() {
       <CriticalZonesPanel criticalZones={criticalZones} categoryLabel={categoryLabel} />
 
       <section className="mb-4 rounded-xl bg-white p-4 shadow-sm">
-        <h2 className="mb-3 text-base font-medium text-slate-900">Filtros</h2>
+        <h2 className="mb-3 text-lg font-medium text-slate-900">Filtros</h2>
         <div className="space-y-3">
           <label className="block text-xs text-slate-600">
             Categoría
@@ -268,7 +378,7 @@ export function ReportsOverviewPage() {
       />
 
       <section className="rounded-xl bg-white p-4 shadow-sm">
-        <h2 className="mb-3 text-base font-medium text-slate-900">Lista</h2>
+        <h2 className="mb-3 text-lg font-medium text-slate-900">Lista</h2>
 
         {isLoading ? <p className="text-sm text-slate-600">Cargando reportes...</p> : null}
         {isError ? <p className="text-sm text-red-600">No fue posible cargar los reportes.</p> : null}
