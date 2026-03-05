@@ -32,6 +32,10 @@ vi.mock('../../shared/notifications/NotificationCenter', () => ({
   NotificationCenter: () => <div data-testid="notification-center" />,
 }))
 
+vi.mock('./components/UserSidebar', () => ({
+  UserSidebar: () => null,
+}))
+
 vi.mock('react-leaflet', () => ({
   MapContainer: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
   TileLayer: () => <div />,
