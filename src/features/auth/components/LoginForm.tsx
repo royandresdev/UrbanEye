@@ -11,6 +11,7 @@ export function LoginForm() {
   const navigate = useNavigate()
   const { addNotification } = useNotifications()
   const [emailPendingConfirmation, setEmailPendingConfirmation] = useState<string | null>(null)
+  const [invalidCredentialsMessage, setInvalidCredentialsMessage] = useState<string | null>(null)
   const [isResendingConfirmation, setIsResendingConfirmation] = useState(false)
 
   const {
@@ -27,6 +28,7 @@ export function LoginForm() {
 
   const onSubmit = async (values: LoginFormValues) => {
     setEmailPendingConfirmation(null)
+    setInvalidCredentialsMessage(null)
 
     const { error } = await supabase.auth.signInWithPassword({
       email: values.email,
@@ -35,6 +37,9 @@ export function LoginForm() {
 
     if (error) {
       const unconfirmedEmail = error.message.toLowerCase().includes('email not confirmed')
+      const invalidCredentials =
+        (error as { code?: string }).code?.toLowerCase() === 'invalid_credentials' ||
+        error.message.toLowerCase().includes('invalid login credentials')
 
       if (unconfirmedEmail) {
         setEmailPendingConfirmation(values.email)
@@ -44,6 +49,12 @@ export function LoginForm() {
           level: 'warning',
         })
         return
+      }
+
+      if (invalidCredentials) {
+        setInvalidCredentialsMessage(
+          'Credenciales inválidas. Verifica tu correo y contraseña, o crea una cuenta si aún no te has registrado.',
+        )
       }
 
       addNotification({
@@ -138,6 +149,12 @@ export function LoginForm() {
           >
             {isResendingConfirmation ? 'Reenviando...' : 'Reenviar correo de confirmación'}
           </button>
+        </div>
+      ) : null}
+
+      {invalidCredentialsMessage ? (
+        <div className="rounded-lg border border-amber-300 bg-amber-50 p-3">
+          <p className="text-xs text-amber-900">{invalidCredentialsMessage}</p>
         </div>
       ) : null}
     </form>

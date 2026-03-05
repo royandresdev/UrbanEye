@@ -159,6 +159,29 @@ describe('LoginPage', () => {
     expect(await screen.findByText(/Tu correo aún no está confirmado. Revisa tu bandeja de entrada o reenvía la confirmación./i)).toBeInTheDocument()
   })
 
+  it('muestra en la UI un aviso cuando las credenciales son inválidas', async () => {
+    signInWithPasswordMock.mockResolvedValueOnce({
+      error: { code: 'invalid_credentials', message: 'Invalid login credentials' },
+    })
+
+    render(
+      <MemoryRouter>
+        <LoginPage />
+      </MemoryRouter>
+    )
+
+    await screen.findByRole('heading', { name: /mejora tu ciudad/i })
+
+    await userEvent.type(screen.getByLabelText('Correo Electrónico'), 'ciudadano@urbaneye.app')
+    await userEvent.type(screen.getByLabelText('Contraseña'), 'clave-incorrecta')
+
+    await userEvent.click(screen.getByRole('button', { name: 'Iniciar Sesión' }))
+
+    expect(
+      await screen.findByText(/credenciales inválidas. verifica tu correo y contraseña/i),
+    ).toBeInTheDocument()
+  })
+
   it('muestra sesión activa y permite cerrar sesión', async () => {
     getSessionMock.mockResolvedValueOnce({
       data: {
