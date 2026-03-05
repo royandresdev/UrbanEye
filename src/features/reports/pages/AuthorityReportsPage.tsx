@@ -1,9 +1,13 @@
-import { FiBell, FiChevronDown, FiFlag, FiMapPin, FiShield } from 'react-icons/fi'
+import { useState } from 'react'
+import { FiBell, FiChevronDown, FiFlag, FiMapPin, FiMenu, FiShield } from 'react-icons/fi'
 import { categoryLabel, statusLabel } from '../reportsUiConstants'
 import type { ReportCategory, ReportStatus } from '../reportsTypes'
 import { useReportsDashboardState } from '../useReportsDashboardState'
+import { UserSidebar } from '../components/UserSidebar'
 
 export function AuthorityReportsPage() {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+
   const {
     isLoading,
     isError,
@@ -25,9 +29,16 @@ export function AuthorityReportsPage() {
     <main className="mx-auto min-h-screen w-full max-w-md bg-base py-6 text-fg-primary">
       <header className="mb-5 flex items-center justify-between py-4 border-b border-field-border-secondary">
         <div className="flex items-center gap-3 ml-4">
-          <div className="flex h-10 w-10 items-center justify-center rounded-sm bg-field-bg-primary text-accent-500">
-            <FiShield className="h-5 w-5" />
-          </div>
+          <button
+            type="button"
+            onClick={() => {
+              setIsSidebarOpen(true)
+            }}
+            className="flex h-10 w-10 items-center justify-center rounded-sm bg-field-bg-primary text-accent-500"
+            aria-label="Abrir menú de usuario"
+          >
+            <FiMenu className="h-5 w-5" />
+          </button>
           <div>
             <h1 className="text-lg font-semibold leading-tight">Panel de Gestión</h1>
             <p className="text-xs text-fg-secondary">Portal de Autoridades</p>
@@ -213,6 +224,14 @@ export function AuthorityReportsPage() {
           ) : null}
         </section>
       </div>
+
+      <UserSidebar
+        isOpen={isSidebarOpen}
+        onClose={() => {
+          setIsSidebarOpen(false)
+        }}
+        roleLabel="Autoridad"
+      />
     </main>
   )
 }
