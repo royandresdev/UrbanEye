@@ -12,6 +12,7 @@ import type { ReportCategory, ReportItem, ReportStatus } from './reportsTypes'
 import { useNotifications } from '../../shared/notifications/useNotifications'
 import { CriticalZonesPanel } from './components/CriticalZonesPanel'
 import { CitizenPanelHeader } from './components/CitizenPanelHeader'
+import { CitizenStatsPanel } from './components/CitizenStatsPanel'
 import { OperationalSummaryPanel } from './components/OperationalSummaryPanel'
 import { ReportListItem } from './components/ReportListItem'
 import { ReportsHeader } from './components/ReportsHeader'
@@ -175,22 +176,14 @@ export function ReportsOverviewPage() {
   if (!isAuthority) {
     return (
       <main className="mx-auto min-h-screen w-full max-w-md bg-base px-4 py-4 text-fg-primary">
+
         <CitizenPanelHeader />
 
-        <section className="mb-4 grid grid-cols-3 gap-3">
-          <article className="rounded-xl border border-field-border-secondary bg-field-bg-secondary p-3">
-            <p className="text-xs font-semibold uppercase tracking-wide text-fg-muted">Nuevos</p>
-            <p className="mt-2 text-5xl font-bold text-fg-primary">{newReportsCount}</p>
-          </article>
-          <article className="rounded-xl border border-field-border-secondary bg-field-bg-secondary p-3">
-            <p className="text-xs font-semibold uppercase tracking-wide text-fg-muted">En proceso</p>
-            <p className="mt-2 text-5xl font-bold text-accent-500">{inProgressReportsCount}</p>
-          </article>
-          <article className="rounded-xl border border-field-border-secondary bg-field-bg-secondary p-3">
-            <p className="text-xs font-semibold uppercase tracking-wide text-fg-muted">Resueltos</p>
-            <p className="mt-2 text-5xl font-bold text-fg-primary">{resolvedReportsCount}</p>
-          </article>
-        </section>
+        <CitizenStatsPanel
+          newReportsCount={newReportsCount}
+          inProgressReportsCount={inProgressReportsCount}
+          resolvedReportsCount={resolvedReportsCount}
+        />
 
         <Link to="/reports/new" className="btn-primary mb-6 inline-flex w-full items-center justify-center gap-2">
           <span aria-hidden>⊕</span>
