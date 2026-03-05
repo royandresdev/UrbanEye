@@ -1,10 +1,13 @@
+import 'leaflet/dist/leaflet.css'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useForm, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import type { IconType } from 'react-icons'
-import { FiArrowRight, FiCamera, FiCrosshair, FiMap, FiMapPin, FiSun, FiTool, FiTrash2, FiX } from 'react-icons/fi'
+import { CircleMarker, MapContainer, TileLayer, useMap, useMapEvents } from 'react-leaflet'
+import { FiArrowRight, FiCamera, FiCrosshair, FiMapPin, FiSun, FiTool, FiTrash2, FiX } from 'react-icons/fi'
 import { TbRoad } from 'react-icons/tb'
+import { useEffect } from 'react'
 import {
   type CreateReportFormInput,
   type CreateReportFormValues,
@@ -64,6 +67,8 @@ export function NewReportPage() {
   })
 
   const selectedPhotoName = photoFileList?.[0]?.name ?? ''
+  const currentLatitude = typeof latitude === 'number' ? latitude : DEFAULT_LATITUDE
+  const currentLongitude = typeof longitude === 'number' ? longitude : DEFAULT_LONGITUDE
 
   const onUseCurrentLocation = () => {
     setGeoError(null)
@@ -209,20 +214,38 @@ export function NewReportPage() {
           </div>
 
           <div className="relative overflow-hidden rounded-2xl border border-field-border-secondary bg-field-bg-secondary">
-            <div className="h-52 bg-[radial-gradient(circle_at_20%_30%,#d9e2c7_0%,#d5dec0_34%,#c7d1b2_100%)]" />
-            <div className="absolute inset-0 bg-[linear-gradient(transparent_92%,rgba(255,255,255,0.2)_93%),linear-gradient(90deg,transparent_92%,rgba(255,255,255,0.2)_93%)] bg-size-[24px_24px] opacity-40" />
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-accent-500 text-brand-950 shadow-md">
-                <FiMapPin className="h-6 w-6" />
+            <div className="h-52">
+              <MapContainer center={[currentLatitude, currentLongitude]} zoom={16} className="h-full w-full">
+                <TileLayer
+                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                />
+                <MapLocationPicker
+                  latitude={currentLatitude}
+                  longitude={currentLongitude}
+                  onSelect={(nextLatitude, nextLongitude) => {
+                    setValue('latitude', Number(nextLatitude.toFixed(6)), {
+                      shouldValidate: true,
+                      shouldDirty: true,
+                    })
+                    setValue('longitude', Number(nextLongitude.toFixed(6)), {
+                      shouldValidate: true,
+                      shouldDirty: true,
+                    })
+                  }}
+                />
+                <CircleMarker
+                  center={[currentLatitude, currentLongitude]}
+                  radius={10}
+                  pathOptions={{ color: '#1ce57b', fillOpacity: 0.9 }}
+                />
+              </MapContainer>
+            </div>
+            <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-accent-500/90 text-brand-950 shadow-md">
+                <FiMapPin className="h-5 w-5" />
               </div>
             </div>
-            <button
-              type="button"
-              className="absolute bottom-3 right-3 inline-flex h-10 w-10 items-center justify-center rounded-full bg-brand-950 text-accent-500"
-              aria-label="Ver mapa"
-            >
-              <FiMap className="h-5 w-5" />
-            </button>
           </div>
 
           <p className="mt-2 text-xs text-fg-secondary">Calle Principal 245, Área Metropolitana</p>
@@ -274,4 +297,26 @@ function CategoryButton({ label, icon: Icon, isActive, onClick }: CategoryButton
       <span>{label}</span>
     </button>
   )
+}
+
+type MapLocationPickerProps = {
+  latitude: number
+  longitude: number
+  onSelect: (latitude: number, longitude: number) => void
+}
+
+function MapLocationPicker({ latitude, longitude, onSelect }: MapLocationPickerProps) {
+  const map = useMap()
+
+  useEffect(() => {
+    map.setView([latitude, longitude])
+  }, [map, latitude, longitude])
+
+  useMapEvents({
+    click: (event) => {
+      onSelect(event.latlng.lat, event.latlng.lng)
+    },
+  })
+
+  return null
 }
