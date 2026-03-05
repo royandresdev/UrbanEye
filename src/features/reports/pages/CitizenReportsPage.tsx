@@ -4,11 +4,13 @@ import { CitizenPanelHeader } from '../components/CitizenPanelHeader'
 import { CitizenStatsPanel } from '../components/CitizenStatsPanel'
 import { ReportsList } from '../components/ReportsList'
 import { ReportsMapPanel } from '../components/ReportsMapPanel'
+import { UserSidebar } from '../components/UserSidebar'
 import { categoryLabel, statusMarkerColor } from '../reportsUiConstants'
 import { useReportsDashboardState } from '../useReportsDashboardState'
 
 export function CitizenReportsPage() {
   const [showCitizenMap, setShowCitizenMap] = useState(false)
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
   const {
     isLoading,
@@ -28,7 +30,11 @@ export function CitizenReportsPage() {
 
   return (
     <main className="mx-auto min-h-screen w-full max-w-md bg-base px-4 py-4 text-fg-primary">
-      <CitizenPanelHeader />
+      <CitizenPanelHeader
+        onOpenSidebar={() => {
+          setIsSidebarOpen(true)
+        }}
+      />
 
       <CitizenStatsPanel
         newReportsCount={citizenSummary.newReports}
@@ -82,6 +88,14 @@ export function CitizenReportsPage() {
           isVotePendingForReport={isVotePendingForReport}
         />
       </section>
+
+      <UserSidebar
+        isOpen={isSidebarOpen}
+        onClose={() => {
+          setIsSidebarOpen(false)
+        }}
+        roleLabel="Ciudadano"
+      />
     </main>
   )
 }
