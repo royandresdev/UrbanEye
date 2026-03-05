@@ -3,6 +3,7 @@ import type { ReportCategory, ReportItem, ReportStatus } from './reportsTypes'
 import {
   type DistanceFilter,
   type UserLocation,
+  buildCitizenSummary,
   buildCriticalZones,
   buildOperationalSummary,
   filterReports,
@@ -44,6 +45,11 @@ export function useReportsViewModel({
     [prioritizedReports],
   )
 
+  const citizenSummary = useMemo(
+    () => buildCitizenSummary(prioritizedReports),
+    [prioritizedReports],
+  )
+
   const criticalZones = useMemo(() => buildCriticalZones(prioritizedReports), [prioritizedReports])
 
   const center = useMemo(() => getMapCenter(filteredReports), [filteredReports])
@@ -52,6 +58,7 @@ export function useReportsViewModel({
     prioritizedReports,
     filteredReports,
     operationalSummary,
+    citizenSummary,
     criticalZones,
     center,
   }

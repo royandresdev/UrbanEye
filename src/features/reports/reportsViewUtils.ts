@@ -14,6 +14,12 @@ export type OperationalSummary = {
   highPriority: number
 }
 
+export type CitizenSummary = {
+  newReports: number
+  inProgressReports: number
+  resolvedReports: number
+}
+
 export type ZoneMetrics = {
   zone: string
   totalReports: number
@@ -98,6 +104,20 @@ export function buildOperationalSummary(prioritizedReports: ReportItem[]): Opera
   const highPriority = prioritizedReports.filter((report) => report.votes >= 15).length
 
   return { pending, inProgress, resolved, highPriority }
+}
+
+export function buildCitizenSummary(prioritizedReports: ReportItem[]): CitizenSummary {
+  const newReports = prioritizedReports.filter((report) => report.status === 'nuevo').length
+  const inProgressReports = prioritizedReports.filter(
+    (report) => report.status === 'en_proceso',
+  ).length
+  const resolvedReports = prioritizedReports.filter((report) => report.status === 'resuelto').length
+
+  return {
+    newReports,
+    inProgressReports,
+    resolvedReports,
+  }
 }
 
 export function buildCriticalZones(prioritizedReports: ReportItem[]): ZoneMetrics[] {

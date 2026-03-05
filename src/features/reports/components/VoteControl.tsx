@@ -7,22 +7,21 @@ type VoteControlProps = {
 }
 
 export function VoteControl({ report, isPendingForReport, onVote }: VoteControlProps) {
+  const isDisabled = Boolean(report.hasUserVoted) || isPendingForReport
+
   return (
-    <div className="mt-2 flex items-center justify-between text-xs text-slate-500">
-      <span>{report.address}</span>
-      <div className="flex items-center gap-2">
-        <span>{report.votes} votos</span>
-        <button
-          type="button"
-          onClick={() => {
-            onVote(report)
-          }}
-          disabled={Boolean(report.hasUserVoted) || isPendingForReport}
-          className="rounded-lg border border-slate-300 px-2 py-1 text-xs font-medium text-slate-700 disabled:opacity-60"
-        >
-          Me afecta +1
-        </button>
-      </div>
+    <div className="mt-3 border-t border-field-border-secondary pt-3">
+      <button
+        type="button"
+        onClick={() => {
+          onVote(report)
+        }}
+        disabled={isDisabled}
+        aria-label="Me afecta +1"
+        className="rounded-full border border-field-border-primary bg-field-bg-primary px-3 py-1 text-xs font-semibold text-accent-500 disabled:opacity-30 disabled:text-fg-secondary"
+      >
+        {isDisabled ? `Me afecta (${report.votes})` : `Me afecta (${report.votes})`}
+      </button>
     </div>
   )
 }
