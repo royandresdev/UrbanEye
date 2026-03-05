@@ -1,0 +1,20 @@
+@utility input-secondary {
+  @apply mt-1 w-full rounded-md bg-field-bg-secondary border border-field-border-secondary p-4 text-sm focus:border-field-border-primary focus:outline-none;
+
+  &:autofill,
+  &:autofill:hover,
+  &:autofill:focus,
+  &:-webkit-autofill,
+  &:-webkit-autofill:hover,
+  &:-webkit-autofill:focus {
+    -webkit-text-fill-color: var(--color-fg-primary);
+    caret-color: var(--color-fg-primary);
+    box-shadow: 0 0 0 1000px var(--color-field-bg-primary) inset;
+    -webkit-box-shadow: 0 0 0 1000px var(--color-field-bg-primary) inset;
+    transition: background-color 9999s ease-out 0s;
+  }
+}
+
+@utility btn-primary {
+  @apply rounded-md bg-button-bg-primary px-4 py-3.5 text-base font-bold disabled:opacity-60;
+}

@@ -267,6 +267,7 @@ VITE_MAP_TILE_URL=
 - Definir paleta (primario, secundarios, fondo, texto, éxito, warning, error).
 - Definir tipografías, tamaños, pesos, radios, bordes, sombras y espaciados.
 - Documentar tokens en una tabla base antes de tocar componentes.
+- Referencia de implementación actual: la configuración de colores/tokens está en `src/index.css` dentro de `:root`.
 
 **Paso 2 — Configurar colores/tokens en Tailwind**
 - Como el proyecto usa `@import 'tailwindcss'` en `src/index.css` (sin `tailwind.config`), declarar tokens CSS en `:root` (por ejemplo `--color-primary`, `--color-bg`, etc.) y usarlos con utilidades arbitrarias (`bg-[var(--color-primary)]`, `text-[var(--color-text)]`).
