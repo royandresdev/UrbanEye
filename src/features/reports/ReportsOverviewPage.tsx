@@ -11,6 +11,7 @@ import {
 import type { ReportCategory, ReportItem, ReportStatus } from './reportsTypes'
 import { useNotifications } from '../../shared/notifications/useNotifications'
 import { CriticalZonesPanel } from './components/CriticalZonesPanel'
+import { CitizenPanelHeader } from './components/CitizenPanelHeader'
 import { OperationalSummaryPanel } from './components/OperationalSummaryPanel'
 import { ReportListItem } from './components/ReportListItem'
 import { ReportsHeader } from './components/ReportsHeader'
@@ -174,18 +175,7 @@ export function ReportsOverviewPage() {
   if (!isAuthority) {
     return (
       <main className="mx-auto min-h-screen w-full max-w-md bg-base px-4 py-4 text-fg-primary">
-        <header className="mb-4 flex items-center justify-between border-b border-field-border-secondary pb-3">
-          <button
-            type="button"
-            className="rounded-md border border-field-border-secondary bg-field-bg-secondary px-2 py-1 text-fg-secondary"
-          >
-            ☰
-          </button>
-          <h1 className="text-2xl font-semibold">Panel del Ciudadano</h1>
-          <div className="flex h-10 w-10 items-center justify-center rounded-full border border-field-border-secondary bg-field-bg-secondary text-fg-secondary">
-            👤
-          </div>
-        </header>
+        <CitizenPanelHeader />
 
         <section className="mb-4 grid grid-cols-3 gap-3">
           <article className="rounded-xl border border-field-border-secondary bg-field-bg-secondary p-3">
