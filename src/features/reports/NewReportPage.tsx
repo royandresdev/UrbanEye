@@ -194,7 +194,7 @@ export function NewReportPage() {
             {...register('description')}
             rows={4}
             placeholder="Describe el problema en detalle..."
-            className="input-secondary h-32 resize-none p-4 text-base placeholder:text-fg-secondary"
+            className="input-secondary h-32 resize-none p-4 text-fg-primary placeholder:text-fg-secondary"
           />
           {errors.description?.message ? <p className="mt-2 text-xs text-error">{errors.description.message}</p> : null}
         </section>
