@@ -122,8 +122,8 @@ export function NewReportPage() {
   }
 
   return (
-    <main className="mx-auto min-h-screen w-full max-w-md bg-base px-4 py-6 text-fg-primary">
-      <header className="mb-6 rounded-xl border border-field-border-secondary bg-brand-950/80 px-4 py-4">
+    <main className="mx-auto min-h-screen w-full max-w-md bg-base py-6 text-fg-primary">
+      <header className="mb-6 border-b border-field-border-secondary px-4 py-4">
         <div className="flex items-center justify-between">
           <Link
             to="/reports"
@@ -132,18 +132,18 @@ export function NewReportPage() {
           >
             <FiX className="h-6 w-6" />
           </Link>
-          <h1 className="text-2xl font-semibold">Crear Nuevo Reporte</h1>
+          <h1 className="text-lg font-semibold">Crear Nuevo Reporte</h1>
           <span className="h-8 w-8" aria-hidden />
         </div>
       </header>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 px-4">
         <input type="hidden" {...register('category')} />
         <input type="hidden" {...register('latitude', { valueAsNumber: true })} />
         <input type="hidden" {...register('longitude', { valueAsNumber: true })} />
 
         <section>
-          <h2 className="mb-4 text-4xl font-semibold">Selecciona la Categoría</h2>
+          <h2 className="mb-4 text-lg font-semibold">Selecciona la Categoría</h2>
           <div className="grid grid-cols-2 gap-3">
             {categoryOptions.map((option) => (
               <CategoryButton
@@ -164,7 +164,7 @@ export function NewReportPage() {
         </section>
 
         <section>
-          <h2 className="mb-4 text-4xl font-semibold">Añadir Foto</h2>
+          <h2 className="mb-4 text-lg font-semibold">Añadir Foto</h2>
           <label
             htmlFor="report-photo"
             className="flex h-24 w-24 cursor-pointer items-center justify-center rounded-xl border-2 border-dashed border-accent-500/60 bg-field-bg-primary text-accent-500"
@@ -184,7 +184,7 @@ export function NewReportPage() {
         </section>
 
         <section>
-          <h2 className="mb-4 text-4xl font-semibold">Descripción</h2>
+          <h2 className="mb-4 text-lg font-semibold">Descripción</h2>
           <textarea
             {...register('description')}
             rows={4}
@@ -196,7 +196,7 @@ export function NewReportPage() {
 
         <section>
           <div className="mb-3 flex items-center justify-between">
-            <h2 className="text-4xl font-semibold">Ubicación</h2>
+            <h2 className="text-lg font-semibold">Ubicación</h2>
             <button
               type="button"
               onClick={onUseCurrentLocation}
@@ -225,7 +225,7 @@ export function NewReportPage() {
             </button>
           </div>
 
-          <p className="mt-2 text-sm text-fg-secondary">Calle Principal 245, Área Metropolitana</p>
+          <p className="mt-2 text-xs text-fg-secondary">Calle Principal 245, Área Metropolitana</p>
           <p className="mt-1 text-xs text-fg-muted">
             Lat: {typeof latitude === 'number' ? latitude.toFixed(6) : DEFAULT_LATITUDE.toFixed(6)} · Lng:{' '}
             {typeof longitude === 'number' ? longitude.toFixed(6) : DEFAULT_LONGITUDE.toFixed(6)}
@@ -239,7 +239,7 @@ export function NewReportPage() {
         <button
           type="submit"
           disabled={isSubmitting || createReportMutation.isPending}
-          className="btn-primary inline-flex w-full items-center justify-center gap-2 rounded-xl py-4 text-2xl text-brand-950 disabled:opacity-60"
+          className="btn-primary inline-flex w-full items-center justify-center gap-2 rounded-xl py-4 text-brand-950 disabled:opacity-60"
         >
           {createReportMutation.isPending ? 'Publicando...' : 'Continuar a Revisión'}
           <FiArrowRight className="h-6 w-6" />
@@ -265,9 +265,9 @@ function CategoryButton({ label, icon: Icon, isActive, onClick }: CategoryButton
     <button
       type="button"
       onClick={onClick}
-      className={`flex items-center gap-2 rounded-xl border px-4 py-3 text-left text-base font-medium transition ${isActive
-          ? 'border-accent-500 bg-field-bg-primary text-fg-primary'
-          : 'border-field-border-secondary bg-field-bg-secondary text-fg-primary hover:border-accent-500/40'
+      className={`flex items-center gap-2 rounded-md border px-4 py-3 text-left text-sm text-base font-medium transition ${isActive
+        ? 'border-accent-500 bg-field-bg-primary text-fg-primary'
+        : 'border-transparent bg-field-bg-secondary text-fg-primary hover:border-accent-500/40'
         }`}
     >
       <Icon className={`h-5 w-5 ${isActive ? 'text-accent-500' : 'text-fg-secondary'}`} />
