@@ -7,7 +7,7 @@ export function CitizenPanelHeader() {
       >
         ☰
       </button>
-      <h1 className="text-2xl font-semibold">Panel del Ciudadano</h1>
+      <h1 className="text-lg font-semibold">Panel del Ciudadano</h1>
       <div className="flex h-10 w-10 items-center justify-center rounded-full border border-field-border-secondary bg-field-bg-secondary text-fg-secondary">
         👤
       </div>

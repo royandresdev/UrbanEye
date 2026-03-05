@@ -36,20 +36,20 @@ export function CitizenReportsPage() {
         resolvedReportsCount={citizenSummary.resolvedReports}
       />
 
-      <Link to="/reports/new" className="btn-primary mb-6 inline-flex w-full items-center justify-center gap-2">
+      <Link to="/reports/new" className="text-lg btn-primary mb-6 inline-flex w-full items-center justify-center gap-2">
         <span aria-hidden>⊕</span>
         Reportar Problema
       </Link>
 
       <section>
         <div className="mb-3 flex items-center justify-between">
-          <h2 className="text-4xl font-semibold text-fg-primary">Reportes Recientes</h2>
+          <h2 className="text-xl font-semibold text-fg-primary">Reportes Recientes</h2>
           <button
             type="button"
             onClick={() => {
               setShowCitizenMap((current) => !current)
             }}
-            className="text-2xl font-medium text-accent-500"
+            className="font-medium text-accent-500"
           >
             {showCitizenMap ? 'Ocultar mapa' : 'Ver Mapa'}
           </button>
@@ -82,14 +82,6 @@ export function CitizenReportsPage() {
           isVotePendingForReport={isVotePendingForReport}
         />
       </section>
-
-      <nav className="mt-8 grid grid-cols-3 border-t border-field-border-secondary pt-3 text-center text-xs text-fg-muted">
-        <button type="button" className="font-semibold text-accent-500">
-          Inicio
-        </button>
-        <button type="button">Explorar</button>
-        <button type="button">Mis reportes</button>
-      </nav>
     </main>
   )
 }

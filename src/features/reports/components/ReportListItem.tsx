@@ -39,19 +39,21 @@ export function ReportListItem({
   })
 
   return (
-    <li className="rounded-xl border border-field-border-secondary bg-field-bg-secondary p-4">
+    <li className="rounded-md border border-field-border-secondary bg-field-bg-secondary p-4">
       <div className="flex gap-3">
-        <div className="h-20 w-20 shrink-0 rounded-lg border border-field-border-secondary bg-brand-900" />
+        <div className="h-20 w-20 shrink-0 rounded-sm border border-field-border-secondary bg-brand-900">
+          { /* Imagen del reporte */}
+        </div>
 
         <div className="min-w-0 flex-1">
           <div className="mb-2 flex items-center justify-between gap-2">
-            <span className={`rounded-md px-2 py-1 text-xs font-bold uppercase ${statusBadgeClass[report.status]}`}>
+            <span className={`rounded px-2 py-1 text-[10px] font-bold uppercase ${statusBadgeClass[report.status]}`}>
               {statusLabel[report.status]}
             </span>
             <span className="text-xs text-fg-muted">{relativeTime}</span>
           </div>
 
-          <p className="line-clamp-2 text-3xl font-semibold text-fg-primary">{report.description}</p>
+          <p className="line-clamp-1 font-semibold text-fg-primary">{report.description}</p>
           <p className="mt-1 line-clamp-1 text-sm text-fg-secondary">{report.address || categoryLabel[report.category]}</p>
         </div>
       </div>

@@ -18,7 +18,7 @@ export function VoteControl({ report, isPendingForReport, onVote }: VoteControlP
         }}
         disabled={isDisabled}
         aria-label="Me afecta +1"
-        className="rounded-full border border-field-border-primary bg-field-bg-primary px-3 py-1 text-sm font-semibold text-accent-500 disabled:opacity-60"
+        className="rounded-full border border-field-border-primary bg-field-bg-primary px-3 py-1 text-xs font-semibold text-accent-500 disabled:opacity-30 disabled:text-fg-secondary"
       >
         {isDisabled ? `Me afecta (${report.votes})` : `Me afecta (${report.votes})`}
       </button>
