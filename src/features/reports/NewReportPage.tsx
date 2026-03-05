@@ -1,6 +1,6 @@
 import 'leaflet/dist/leaflet.css'
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useForm, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import type { IconType } from 'react-icons'
@@ -28,6 +28,7 @@ const DEFAULT_LONGITUDE = -99.133209
 
 export function NewReportPage() {
   const [geoError, setGeoError] = useState<string | null>(null)
+  const navigate = useNavigate()
   const { addNotification } = useNotifications()
   const createReportMutation = useCreateReport()
   const {
@@ -124,6 +125,8 @@ export function NewReportPage() {
       message: 'Tu incidencia fue registrada con estado Nuevo.',
       level: 'success',
     })
+
+    navigate('/reports')
   }
 
   return (
