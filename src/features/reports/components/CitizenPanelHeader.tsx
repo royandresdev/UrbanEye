@@ -1,22 +1,33 @@
+import { FiBell, FiMenu } from "react-icons/fi"
+
 type CitizenPanelHeaderProps = {
   onOpenSidebar?: () => void
 }
 
 export function CitizenPanelHeader({ onOpenSidebar }: CitizenPanelHeaderProps) {
   return (
-    <header className="mb-4 flex items-center justify-between border-b border-field-border-secondary pb-3">
+    <header className="mb-5 flex items-center justify-between border-b border-field-border-secondary pb-3">
+      <div className="flex items-center gap-3">
+        <button
+          type="button"
+          onClick={onOpenSidebar}
+          className="flex h-10 w-10 items-center justify-center rounded-sm bg-field-bg-primary text-accent-500"
+          aria-label="Abrir menú de usuario"
+        >
+          <FiMenu className="h-5 w-5" />
+        </button>
+        <div>
+          <h1 className="text-lg font-semibold leading-tight">Panel de Gestión</h1>
+          <p className="text-xs text-fg-secondary">Portal de Ciudadano</p>
+        </div>
+      </div>
       <button
         type="button"
-        onClick={onOpenSidebar}
-        className="rounded-md border border-field-border-secondary bg-field-bg-secondary px-2 py-1 text-fg-secondary"
-        aria-label="Abrir menú de usuario"
+        className="mr-4 inline-flex h-10 w-10 items-center justify-center rounded-full bg-field-bg-secondary text-fg-secondary"
+        aria-label="Notificaciones"
       >
-        ☰
+        <FiBell className="h-5 w-5" />
       </button>
-      <h1 className="text-lg font-semibold">Panel del Ciudadano</h1>
-      <div className="flex h-10 w-10 items-center justify-center rounded-full border border-field-border-secondary bg-field-bg-secondary text-fg-secondary">
-        👤
-      </div>
     </header>
   )
 }
