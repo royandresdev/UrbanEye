@@ -252,4 +252,32 @@ describe('RegisterPage', () => {
       })
     )
   })
+
+  it('muestra un aviso en UI cuando el correo es inválido para registro', async () => {
+    signUpMock.mockResolvedValueOnce({
+      error: {
+        code: 'email_address_invalid',
+        message: 'Email address "info@email.com" is invalid',
+      },
+    })
+
+    render(
+      <MemoryRouter>
+        <RegisterPage />
+      </MemoryRouter>
+    )
+
+    await screen.findByRole('heading', { name: /crear cuenta/i })
+
+    await userEvent.type(screen.getByLabelText('Nombre completo'), 'Ana Barrio')
+    await userEvent.type(screen.getByLabelText('Correo'), 'info@email.com')
+    await userEvent.type(screen.getByLabelText('Contraseña'), 'supersegura')
+    await userEvent.type(screen.getByLabelText('Confirmar contraseña'), 'supersegura')
+
+    await userEvent.click(screen.getByRole('button', { name: 'Crear cuenta' }))
+
+    expect(
+      await screen.findByText(/el correo ingresado no es aceptado por el servicio de autenticación/i),
+    ).toBeInTheDocument()
+  })
 })
