@@ -59,7 +59,7 @@ export function ReportListItem({
             <span className="text-xs text-fg-muted">{relativeTime}</span>
           </div>
 
-          <p className="line-clamp-1 font-semibold text-fg-primary">{report.description}</p>
+          <p className="line-clamp-2 font-semibold text-fg-primary">{report.description}</p>
           <p className="mt-1 line-clamp-1 text-sm text-fg-secondary">{report.address || categoryLabel[report.category]}</p>
         </div>
       </div>
