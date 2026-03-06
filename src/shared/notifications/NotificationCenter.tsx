@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { formatDistanceToNow } from 'date-fns'
 import { es } from 'date-fns/locale'
 import { useNotifications } from './useNotifications'
@@ -19,6 +19,8 @@ const levelLabel: Record<NotificationLevel, string> = {
 
 export function NotificationCenter() {
   const [isOpen, setIsOpen] = useState(false)
+  const buttonRef = useRef<HTMLButtonElement | null>(null)
+  const panelRef = useRef<HTMLDivElement | null>(null)
   const { notifications, unreadCount, markAllAsRead, clearAll } = useNotifications()
 
   const sortedNotifications = useMemo(
@@ -31,9 +33,38 @@ export function NotificationCenter() {
     [notifications],
   )
 
+  useEffect(() => {
+    if (!isOpen) {
+      return
+    }
+
+    const handlePointerDownOutside = (event: MouseEvent | TouchEvent) => {
+      const target = event.target as Node | null
+
+      if (!target) {
+        return
+      }
+
+      if (buttonRef.current?.contains(target) || panelRef.current?.contains(target)) {
+        return
+      }
+
+      setIsOpen(false)
+    }
+
+    document.addEventListener('mousedown', handlePointerDownOutside)
+    document.addEventListener('touchstart', handlePointerDownOutside)
+
+    return () => {
+      document.removeEventListener('mousedown', handlePointerDownOutside)
+      document.removeEventListener('touchstart', handlePointerDownOutside)
+    }
+  }, [isOpen])
+
   return (
     <>
       <button
+        ref={buttonRef}
         type="button"
         onClick={() => {
           const nextOpenValue = !isOpen
@@ -50,7 +81,10 @@ export function NotificationCenter() {
       </button>
 
       {isOpen ? (
-        <div className="absolute right-0 top-10 z-50 mt-2 w-80 max-w-[85vw] rounded-xl border border-field-border-primary bg-[#103721] p-3 shadow-lg">
+        <div
+          ref={panelRef}
+          className="absolute right-0 top-10 z-50 mt-2 w-80 max-w-[85vw] rounded-xl border border-field-border-primary bg-[#103721] p-3 shadow-lg"
+        >
           <div className="mb-2 flex items-center justify-between">
             <p className="text-sm font-medium text-fg-primary">Centro de notificaciones</p>
             <button
