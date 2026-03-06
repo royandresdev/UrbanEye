@@ -162,12 +162,27 @@ export function NewReportPage() {
 
         <section>
           <h2 className="mb-4 text-lg font-semibold">Añadir Foto</h2>
-          <label
-            htmlFor="report-photo"
-            className="flex h-24 w-24 cursor-pointer items-center justify-center rounded-xl border-2 border-dashed border-accent-500/60 bg-field-bg-primary text-accent-500"
-          >
-            <FiCamera className="h-9 w-9" />
-          </label>
+          <div className="flex items-center gap-3">
+            <label
+              htmlFor="report-photo"
+              className="
+              flex flex-col h-24 w-24 cursor-pointer items-center justify-center rounded-xl border-2 border-dashed border-field-border-secondary bg-field-bg-secondary text-fg-secondary
+              hover:border-accent-500/40 hover:text-accent-500 hover:bg-field-bg-primary"
+            >
+              <FiCamera className="h-9 w-9 mb-2" />
+              <p className="text-xs text-fg-primary">Tomar foto</p>
+            </label>
+            <span> o </span>
+            <label
+              htmlFor="report-photo-gallery"
+              className="
+              inline-flex h-11 cursor-pointer items-center justify-center rounded-xl border border-field-border-secondary bg-field-bg-secondary px-4 text-sm font-semibold text-fg-primary
+              hover:border-accent-500/40 hover:text-accent-500 hover:bg-field-bg-primary"
+            >
+              Elegir de galería
+            </label>
+          </div>
+
           <input
             id="report-photo"
             type="file"
@@ -175,6 +190,24 @@ export function NewReportPage() {
             capture="environment"
             {...register('photo')}
             className="sr-only"
+          />
+          <input
+            id="report-photo-gallery"
+            type="file"
+            accept="image/*"
+            className="sr-only"
+            onChange={(event) => {
+              const selectedFiles = event.target.files
+
+              if (!selectedFiles?.length) {
+                return
+              }
+
+              setValue('photo', selectedFiles, {
+                shouldValidate: true,
+                shouldDirty: true,
+              })
+            }}
           />
           {selectedPhotoName ? <p className="mt-2 text-xs text-fg-secondary">{selectedPhotoName}</p> : null}
           {errors.photo?.message ? <p className="mt-2 text-xs text-error">{errors.photo.message.toString()}</p> : null}
