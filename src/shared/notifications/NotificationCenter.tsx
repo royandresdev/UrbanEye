@@ -83,9 +83,9 @@ export function NotificationCenter() {
       {isOpen ? (
         <div
           ref={panelRef}
-          className="absolute right-0 top-10 z-50 mt-2 w-80 max-w-[85vw] rounded-xl border border-field-border-primary bg-[#103721] p-3 shadow-lg"
+          className="absolute right-0 top-10 z-50 mt-2 w-80 max-w-[85vw] rounded-md border border-field-border-primary bg-base shadow-lg overflow-hidden"
         >
-          <div className="mb-2 flex items-center justify-between">
+          <div className="mb-2 flex items-center justify-between p-3 pb-0">
             <p className="text-sm font-medium text-fg-primary">Centro de notificaciones</p>
             <button
               type="button"
@@ -101,17 +101,17 @@ export function NotificationCenter() {
           ) : (
             <ul className="max-h-72 space-y-2 overflow-y-auto">
               {sortedNotifications.map((notification) => (
-                <li key={notification.id} className="rounded-lg border border-slate-200 p-2">
+                <li key={notification.id} className="border bg-field-bg-secondary border-field-border-secondary p-3">
                   <div className="mb-1 flex items-center justify-between gap-2">
-                    <p className="text-sm font-medium text-slate-900">{notification.title}</p>
+                    <p className="text-sm font-medium text-fg-primary">{notification.title}</p>
                     <span
                       className={`rounded-full px-2 py-0.5 text-[10px] font-medium ${levelBadgeClass[notification.level]}`}
                     >
                       {levelLabel[notification.level]}
                     </span>
                   </div>
-                  <p className="text-xs text-slate-700">{notification.message}</p>
-                  <p className="mt-1 text-[11px] text-slate-500">
+                  <p className="text-xs text-fg-secondary">{notification.message}</p>
+                  <p className="mt-1 text-[11px] text-fg-secondary">
                     {formatDistanceToNow(new Date(notification.createdAt), {
                       addSuffix: true,
                       locale: es,
