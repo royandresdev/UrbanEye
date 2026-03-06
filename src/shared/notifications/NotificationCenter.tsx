@@ -3,6 +3,7 @@ import { formatDistanceToNow } from 'date-fns'
 import { es } from 'date-fns/locale'
 import { useNotifications } from './useNotifications'
 import type { NotificationLevel } from './notificationsTypes'
+import { FiBell } from 'react-icons/fi'
 
 const levelBadgeClass: Record<NotificationLevel, string> = {
   info: 'bg-slate-100 text-slate-700',
@@ -31,7 +32,7 @@ export function NotificationCenter() {
   )
 
   return (
-    <div className="relative">
+    <>
       <button
         type="button"
         onClick={() => {
@@ -42,26 +43,27 @@ export function NotificationCenter() {
             markAllAsRead()
           }
         }}
-        className="rounded-lg border border-slate-300 px-3 py-2 text-xs font-medium text-slate-700"
+        className="mr-4 inline-flex h-10 w-10 items-center justify-center rounded-full bg-field-bg-secondary text-fg-secondary"
+        aria-label="Notificaciones"
       >
-        Notificaciones {unreadCount > 0 ? `(${unreadCount})` : ''}
+        <FiBell className="h-5 w-5" /> {unreadCount > 0 ? `(${unreadCount})` : ''}
       </button>
 
       {isOpen ? (
-        <div className="absolute right-0 z-50 mt-2 w-80 max-w-[85vw] rounded-xl border border-slate-200 bg-white p-3 shadow-lg">
+        <div className="absolute right-0 top-10 z-50 mt-2 w-80 max-w-[85vw] rounded-xl border border-field-border-primary bg-[#103721] p-3 shadow-lg">
           <div className="mb-2 flex items-center justify-between">
-            <p className="text-sm font-medium text-slate-900">Centro de notificaciones</p>
+            <p className="text-sm font-medium text-fg-primary">Centro de notificaciones</p>
             <button
               type="button"
               onClick={clearAll}
-              className="text-xs font-medium text-slate-600 underline"
+              className="text-xs font-medium text-accent-500 underline"
             >
               Limpiar
             </button>
           </div>
 
           {sortedNotifications.length === 0 ? (
-            <p className="text-sm text-slate-600">Sin notificaciones por ahora.</p>
+            <p className="text-sm text-fg-secondary">Sin notificaciones por ahora.</p>
           ) : (
             <ul className="max-h-72 space-y-2 overflow-y-auto">
               {sortedNotifications.map((notification) => (
@@ -87,6 +89,6 @@ export function NotificationCenter() {
           )}
         </div>
       ) : null}
-    </div>
+    </>
   )
 }

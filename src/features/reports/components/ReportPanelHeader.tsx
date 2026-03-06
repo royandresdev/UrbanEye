@@ -1,4 +1,5 @@
-import { FiBell, FiMenu } from "react-icons/fi"
+import { FiMenu } from "react-icons/fi"
+import { NotificationCenter } from "../../../shared/notifications/NotificationCenter";
 
 type ReportPanelHeaderProps = {
   onOpenSidebar?: () => void
@@ -7,7 +8,7 @@ type ReportPanelHeaderProps = {
 
 export function ReportPanelHeader({ onOpenSidebar, roleUser }: ReportPanelHeaderProps) {
   return (
-    <header className="mb-5 flex items-center justify-between border-b border-field-border-secondary pb-3">
+    <header className="mb-5 flex items-center justify-between border-b border-field-border-secondary pb-3 relative">
       <div className="flex items-center gap-3">
         <button
           type="button"
@@ -22,13 +23,7 @@ export function ReportPanelHeader({ onOpenSidebar, roleUser }: ReportPanelHeader
           <p className="text-xs text-fg-secondary">Portal de {roleUser}</p>
         </div>
       </div>
-      <button
-        type="button"
-        className="mr-4 inline-flex h-10 w-10 items-center justify-center rounded-full bg-field-bg-secondary text-fg-secondary"
-        aria-label="Notificaciones"
-      >
-        <FiBell className="h-5 w-5" />
-      </button>
+      <NotificationCenter />
     </header>
   )
 }
