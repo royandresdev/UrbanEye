@@ -42,7 +42,13 @@ export function ReportListItem({
     <li className="rounded-md border border-field-border-secondary bg-field-bg-secondary p-4">
       <div className="flex gap-3">
         <div className="h-20 w-20 shrink-0 rounded-sm border border-field-border-secondary bg-brand-900">
-          { /* Imagen del reporte */}
+          {report.imageUrl ? (
+            <img
+              src={report.imageUrl}
+              alt={`Imagen del reporte: ${report.description}`}
+              className="h-full w-full rounded-sm object-cover"
+            />
+          ) : null}
         </div>
 
         <div className="min-w-0 flex-1">

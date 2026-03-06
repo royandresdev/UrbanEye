@@ -24,6 +24,11 @@ type ReportVoteRow = {
   user_id: string | null
 }
 
+type ReportImageRow = {
+  report_id: string
+  public_url: string
+}
+
 type CreateReportInput = {
   category: ReportItem['category']
   description: string
@@ -46,6 +51,7 @@ function buildReportItems(
   reportRows: ReportRow[],
   statusHistoryRows: ReportStatusHistoryRow[],
   voteRows: ReportVoteRow[],
+  reportImageRows: ReportImageRow[],
   currentUserId: string | null,
 ): ReportItem[] {
   const latestStatusByReport = new Map<string, ReportItem['status']>()
@@ -61,6 +67,16 @@ function buildReportItems(
     return accumulator
   }, {})
 
+  const imageUrlByReport = reportImageRows.reduce<Record<string, string>>(
+    (accumulator, imageRow) => {
+      if (!accumulator[imageRow.report_id]) {
+        accumulator[imageRow.report_id] = imageRow.public_url
+      }
+      return accumulator
+    },
+    {},
+  )
+
   return reportRows.map((reportRow) => ({
     id: reportRow.id,
     category: reportRow.category,
@@ -70,6 +86,7 @@ function buildReportItems(
     longitude: reportRow.longitude,
     address: reportRow.address,
     votes: voteCountByReport[reportRow.id] ?? 0,
+    imageUrl: imageUrlByReport[reportRow.id] ?? null,
     hasUserVoted: voteRows.some(
       (voteRow) => voteRow.report_id === reportRow.id && voteRow.user_id === currentUserId,
     ),
@@ -170,6 +187,7 @@ export async function createReport(input: CreateReportInput): Promise<ReportItem
     longitude: insertedReport.longitude,
     address: insertedReport.address,
     votes: 0,
+    imageUrl: publicUrl,
     hasUserVoted: false,
     createdAt: insertedReport.created_at,
   }
@@ -184,6 +202,7 @@ export async function getReports(): Promise<ReportItem[]> {
     { data: reportRows, error: reportsError },
     { data: statusHistoryRows, error: statusError },
     { data: voteRows, error: votesError },
+    { data: reportImageRows, error: reportImagesError },
   ] = await Promise.all([
     supabase
       .from('reports')
@@ -194,6 +213,7 @@ export async function getReports(): Promise<ReportItem[]> {
       .select('report_id, status, created_at')
       .order('created_at', { ascending: false }),
     supabase.from('report_votes').select('report_id, user_id'),
+    supabase.from('report_images').select('report_id, public_url'),
   ])
 
   if (reportsError) {
@@ -208,10 +228,15 @@ export async function getReports(): Promise<ReportItem[]> {
     throw new Error(`No se pudo cargar la votación de reportes: ${votesError.message}`)
   }
 
+  if (reportImagesError) {
+    throw new Error(`No se pudo cargar las imágenes de reportes: ${reportImagesError.message}`)
+  }
+
   return buildReportItems(
     reportRows ?? [],
     statusHistoryRows ?? [],
     voteRows ?? [],
+    reportImageRows ?? [],
     user?.id ?? null,
   )
 }
