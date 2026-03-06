@@ -2,6 +2,8 @@
 
 Aplicación ciudadana para reportar en tiempo real problemas urbanos (baches, luminarias apagadas, basura acumulada, vandalismo, etc.) con foto, ubicación y comentarios, priorizando una experiencia **mobile first**.
 
+<img width="1747" height="1041" alt="Vistas UrbanEye" src="https://github.com/user-attachments/assets/a5d40df7-3434-491f-aab3-546e256a7e75" />
+
 ---
 
 ## 1) Visión del proyecto
