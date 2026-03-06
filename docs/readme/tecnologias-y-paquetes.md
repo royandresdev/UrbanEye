@@ -1,8 +1,16 @@
-## Tecnologías y paquetes
+# Tecnologías y paquetes
 
-### 4) Stack técnico recomendado
+[← Volver al README principal](../../README.md)
 
-#### Frontend
+Este documento resume el stack recomendado y los paquetes de terceros usados por el frontend.
+
+## Contenido
+- [Stack técnico recomendado](#stack-técnico-recomendado)
+- [Paquetes de terceros (frontend)](#paquetes-de-terceros-frontend)
+
+## Stack técnico recomendado
+
+### Frontend
 - **React 18+**
 - **TypeScript**
 - **Vite** (build rápido y simple para SPA)
@@ -13,7 +21,7 @@
 - **Axios** o `fetch` (consumo API)
 - **Leaflet + React-Leaflet** (mapa)
 
-#### Backend (opciones sugeridas)
+### Backend (opciones sugeridas)
 - **Opción A (rápida): Supabase**
   - Auth, PostgreSQL, Storage para imágenes, Realtime.
 - **Opción B (control total): Node.js + Express/Nest + PostgreSQL**
@@ -23,39 +31,39 @@
 
 ---
 
-### 5) Paquetes de terceros (frontend)
+## Paquetes de terceros (frontend)
 
-#### Base
+### Base
 - `react`
 - `react-dom`
 - `typescript`
 - `vite`
 - `@vitejs/plugin-react`
 
-#### Navegación y estado
+### Navegación y estado
 - `react-router-dom`
 - `@tanstack/react-query`
 
-#### Formularios y validación
+### Formularios y validación
 - `react-hook-form`
 - `zod`
 - `@hookform/resolvers`
 
-#### Mapa y geolocalización
+### Mapa y geolocalización
 - `leaflet`
 - `react-leaflet`
 
-#### UI y utilidades
+### UI y utilidades
 - `tailwindcss`
 - `postcss`
 - `autoprefixer`
 - `clsx`
 - `date-fns`
 
-#### Backend as a Service (si usamos Supabase)
+### Backend as a Service (si usamos Supabase)
 - `@supabase/supabase-js`
 
-#### Calidad de código
+### Calidad de código
 - `eslint`
 - `@typescript-eslint/eslint-plugin`
 - `@typescript-eslint/parser`
@@ -63,7 +71,7 @@
 - `eslint-config-prettier`
 - `eslint-plugin-react-hooks`
 
-#### Testing
+### Testing
 - `vitest`
 - `@testing-library/react`
 - `@testing-library/jest-dom`

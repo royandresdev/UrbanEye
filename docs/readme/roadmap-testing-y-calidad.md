@@ -1,29 +1,39 @@
-## Roadmap, testing y calidad
+# Roadmap, testing y calidad
 
-### 10) Roadmap por fases
+[← Volver al README principal](../../README.md)
 
-#### Fase 0 — Base técnica ✅ COMPLETADA
+Este documento agrupa el avance por fases, la estrategia de pruebas y los criterios de calidad del proyecto.
+
+## Contenido
+- [Roadmap por fases](#roadmap-por-fases)
+- [Estrategia de pruebas (Fase 5 · Paso 1)](#estrategia-de-pruebas-fase-5--paso-1)
+- [Comandos y criterios de calidad (Fase 5 · Paso 6)](#comandos-y-criterios-de-calidad-fase-5--paso-6)
+- [Criterios de calidad](#criterios-de-calidad)
+
+## Roadmap por fases
+
+### Fase 0 — Base técnica ✅ COMPLETADA
 - Inicializar proyecto React + TypeScript + Vite.
 - Configurar Tailwind, ESLint, Prettier.
 - Definir layout mobile first.
 
-#### Fase 1 — MVP funcional ✅ COMPLETADA
+### Fase 1 — MVP funcional ✅ COMPLETADA
 - Auth básica.
 - Alta de reportes con foto + ubicación.
 - Visualización en mapa/listado.
 - Estados iniciales del reporte.
 
-#### Fase 2 — Comunidad y priorización ✅ COMPLETADA
+### Fase 2 — Comunidad y priorización ✅ COMPLETADA
 - Votación/priorización ciudadana.
 - Filtros por categoría/estado/distancia.
 - Mejora de UX para autoridades.
 
-#### Fase 3 — Escalado ✅ COMPLETADA
+### Fase 3 — Escalado ✅ COMPLETADA
 - Notificaciones.
 - Métricas de zonas críticas.
 - PWA/offline parcial.
 
-#### Fase 4 — Integración Supabase ✅ COMPLETADA
+### Fase 4 — Integración Supabase ✅ COMPLETADA
 - Configurar proyecto Supabase y variables de entorno (`VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`).
 - Implementar autenticación real (registro, inicio de sesión y cierre de sesión).
 - Migrar datos mock de reportes a tablas reales (`reports`, `report_votes`, `report_status_history`).
@@ -31,7 +41,7 @@
 - Habilitar sincronización en tiempo real de cambios de estado y votos.
 - Definir políticas RLS para seguridad de acceso por rol (ciudadano/autoridad).
 
-#### Fase 5 — Testing y Coverage ✅ COMPLETADA
+### Fase 5 — Testing y Coverage ✅ COMPLETADA
 - Definir estrategia de pruebas (unitarias, integración y UI crítica).
 - Implementar tests para módulos clave: auth, reportes, votación y cambios de estado.
 - Configurar reporte de coverage con Vitest.
@@ -39,7 +49,7 @@
 - Integrar pruebas y coverage en flujo de CI/CD. (`.github/workflows/ci.yml`)
 - Documentar comandos y criterios de calidad de pruebas en el README.
 
-#### Fase 6 — Limpieza de interfaz ✅ COMPLETADA
+### Fase 6 — Limpieza de interfaz ✅ COMPLETADA
 - Consolidar la interfaz final para uso ciudadano y de autoridades con enfoque mobile first.
 - Eliminar trazas de debug visibles en UI (`console` expuesto, placeholders técnicos, etiquetas temporales).
 - Retirar comentarios de apoyo visual incrustados en componentes (textos tipo “TODO”, “debug”, “test”).
@@ -52,7 +62,7 @@
 - La navegación principal y acciones críticas mantienen consistencia visual y textual.
 - Se validan manualmente los flujos principales en móvil y desktop.
 
-#### Fase 7 — Implementación UI según Figma 🚧 EN PROGRESO
+### Fase 7 — Implementación UI según Figma 🚧 EN PROGRESO
 **Paso 1 — Extraer Design Tokens de Figma**
 - Definir paleta (primario, secundarios, fondo, texto, éxito, warning, error).
 - Definir tipografías, tamaños, pesos, radios, bordes, sombras y espaciados.
@@ -92,7 +102,7 @@
 - Navegación y acciones críticas conservan usabilidad y accesibilidad básica.
 - No hay regresiones funcionales en pruebas de auth y reportes.
 
-#### Fase 5 · Paso 1 — Estrategia de pruebas (definición)
+## Estrategia de pruebas (Fase 5 · Paso 1)
 
 **Objetivo inicial**
 - Validar flujos críticos del producto antes de ampliar cobertura global.
@@ -114,7 +124,7 @@
 - Convención de pruebas acordada (`*.test.ts` / `*.test.tsx`).
 - Lista de casos iniciales priorizados para implementación en el Paso 2.
 
-#### Fase 5 · Paso 6 — Comandos y criterios de calidad (documentación)
+## Comandos y criterios de calidad (Fase 5 · Paso 6)
 
 **Comandos de pruebas**
 - `npm run test`: ejecuta toda la suite de pruebas con Vitest.
@@ -140,7 +150,7 @@
 
 ---
 
-### 11) Criterios de calidad
+## Criterios de calidad
 
 - Diseño **mobile first** real (no adaptado al final).
 - Accesibilidad básica (contraste, labels, foco, navegación táctil).

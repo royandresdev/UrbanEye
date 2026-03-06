@@ -1,6 +1,19 @@
-## Producto, arquitectura y flujos
+# Producto, arquitectura y flujos
 
-### 1) Visión del proyecto
+[← Volver al README principal](../../README.md)
+
+Este documento reúne la visión funcional del producto, su arquitectura base y los flujos operativos.
+
+## Contenido
+- [Visión del proyecto](#visión-del-proyecto)
+- [Enfoque de desarrollo](#enfoque-de-desarrollo)
+- [Alcance MVP (primera versión)](#alcance-mvp-primera-versión)
+- [Capacidades técnicas clave del producto](#capacidades-técnicas-clave-del-producto)
+- [Arquitectura inicial sugerida](#arquitectura-inicial-sugerida)
+- [Estructura de carpetas recomendada (frontend)](#estructura-de-carpetas-recomendada-frontend)
+- [Flujo de la aplicación](#flujo-de-la-aplicación)
+
+## Visión del proyecto
 
 UrbanEye busca mejorar la comunicación entre residentes y autoridades locales mediante:
 - Reportes geolocalizados con evidencia visual.
@@ -9,7 +22,7 @@ UrbanEye busca mejorar la comunicación entre residentes y autoridades locales m
 
 ---
 
-### 2) Enfoque de desarrollo
+## Enfoque de desarrollo
 
 - **Frontend:** React + TypeScript
 - **Estrategia UX:** Mobile first (pantallas pequeñas como base y escalado progresivo a tablet/desktop)
@@ -17,7 +30,7 @@ UrbanEye busca mejorar la comunicación entre residentes y autoridades locales m
 
 ---
 
-### 3) Alcance MVP (primera versión)
+## Alcance MVP (primera versión)
 
 1. Registro/inicio de sesión de usuarios.
 2. Crear reporte con:
@@ -31,7 +44,7 @@ UrbanEye busca mejorar la comunicación entre residentes y autoridades locales m
 
 ---
 
-### 6) Capacidades técnicas clave del producto
+## Capacidades técnicas clave del producto
 
 - Captura/subida de imágenes de incidencias.
 - Geolocalización por GPS del dispositivo.
@@ -43,16 +56,16 @@ UrbanEye busca mejorar la comunicación entre residentes y autoridades locales m
 
 ---
 
-### 7) Arquitectura inicial sugerida
+## Arquitectura inicial sugerida
 
-#### Frontend (SPA)
+### Frontend (SPA)
 - Autenticación
 - Módulo de creación de reporte
 - Módulo de mapa/listado
 - Módulo de detalle y estado del reporte
 - Panel básico de administración (fase 2)
 
-#### Datos principales
+### Datos principales
 - `users`
 - `reports`
 - `report_images`
@@ -61,7 +74,7 @@ UrbanEye busca mejorar la comunicación entre residentes y autoridades locales m
 
 ---
 
-### 8) Estructura de carpetas recomendada (frontend)
+## Estructura de carpetas recomendada (frontend)
 
 ```bash
 src/
@@ -85,9 +98,9 @@ src/
 
 ---
 
-### 12) Flujo de la aplicación
+## Flujo de la aplicación
 
-#### Flujo principal (end-to-end)
+### Flujo principal (end-to-end)
 
 1. El usuario entra a la app y se autentica (registro o inicio de sesión).
 2. Crea un reporte con categoría, descripción, foto y ubicación.
@@ -96,7 +109,7 @@ src/
 5. Una autoridad toma el reporte y lo mueve por el flujo operativo.
 6. El reporte finaliza en `resuelto` y queda visible como histórico.
 
-#### Flujo ciudadano
+### Flujo ciudadano
 
 1. **Acceso**: iniciar sesión o registrarse.
 2. **Crear reporte**: completar formulario, adjuntar foto y ubicación.
@@ -104,14 +117,14 @@ src/
 4. **Priorizar**: votar reportes que le afectan (1 voto por usuario por reporte).
 5. **Notificaciones**: recibir confirmaciones y mensajes de éxito/error en acciones clave.
 
-#### Flujo autoridad
+### Flujo autoridad
 
 1. **Acceso**: iniciar sesión con rol `autoridad`.
 2. **Monitoreo**: revisar panel operativo (pendientes, en proceso, resueltos, alta prioridad).
 3. **Gestión**: actualizar estado del reporte según avance operativo.
 4. **Cierre**: marcar como `resuelto` cuando la incidencia fue atendida.
 
-#### Ciclo de estados del reporte
+### Ciclo de estados del reporte
 
 - `nuevo` → `en_revision` → `en_proceso` → `resuelto`
 
@@ -120,7 +133,7 @@ Reglas funcionales:
 - Ciudadano puede crear y votar, pero no cambiar estado.
 - Si un usuario ya votó un reporte, el botón de voto se desactiva.
 
-#### Reglas de interfaz y navegación
+### Reglas de interfaz y navegación
 
 - Navegación principal: Inicio → Auth → Crear reporte / Ver reportes.
 - La interfaz oculta acciones operativas cuando el rol es `ciudadano`.

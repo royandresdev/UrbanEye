@@ -1,6 +1,18 @@
-## Entorno, setup y roles
+# Entorno, setup y roles
 
-### 9) Requisitos de entorno
+[← Volver al README principal](../../README.md)
+
+Este documento concentra requisitos de ejecución, configuración de Supabase y responsabilidades por rol.
+
+## Contenido
+- [Entorno, setup y roles](#entorno-setup-y-roles)
+  - [Contenido](#contenido)
+  - [Requisitos de entorno](#requisitos-de-entorno)
+  - [Setup inicial Supabase](#setup-inicial-supabase)
+  - [Requisitos para imágenes](#requisitos-para-imágenes)
+  - [Funciones por rol](#funciones-por-rol)
+
+## Requisitos de entorno
 
 - **Node.js**: 20 LTS o superior
 - **npm**: 10+ (o pnpm/yarn)
@@ -12,17 +24,17 @@ Variables de entorno esperadas (ejemplo):
 ```env
 VITE_SUPABASE_URL=
 VITE_SUPABASE_PUBLISHABLE_KEY=
-VITE_MAP_TILE_URL=
+VITE_MAP_TILE_URL=https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png
 ```
 
-#### Setup inicial Supabase (Fase 4 · Paso 1)
+## Setup inicial Supabase
 
 1. Copiar `.env.example` a `.env.local`.
 2. Completar `VITE_SUPABASE_URL` y `VITE_SUPABASE_PUBLISHABLE_KEY` desde tu proyecto Supabase.
 3. El cliente queda disponible en `src/shared/lib/supabase.ts`.
 4. El helper `src/shared/lib/env.ts` valida que las variables requeridas existan.
 
-#### Requisitos para imágenes (Fase 4 · Paso 4)
+## Requisitos para imágenes
 
 - Bucket de Storage: `report-images`.
 - Tabla recomendada: `report_images` con columnas mínimas:
@@ -32,7 +44,7 @@ VITE_MAP_TILE_URL=
   - `public_url` (text),
   - `created_at` (timestamptz default now()).
 
-#### Funciones por rol (Fase 4 · Paso 6)
+## Funciones por rol
 
 **Ciudadano**
 - Registrarse e iniciar/cerrar sesión.
