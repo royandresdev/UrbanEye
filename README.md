@@ -4,401 +4,131 @@ Aplicación ciudadana para reportar en tiempo real problemas urbanos (baches, lu
 
 <img width="1747" height="1041" alt="Vistas UrbanEye" src="https://github.com/user-attachments/assets/a5d40df7-3434-491f-aab3-546e256a7e75" />
 
----
-
-## 1) Visión del proyecto
-
-UrbanEye busca mejorar la comunicación entre residentes y autoridades locales mediante:
-- Reportes geolocalizados con evidencia visual.
-- Priorización comunitaria de incidencias.
-- Seguimiento del estado de cada intervención.
+Capacidades principales:
+- Autenticación de usuarios y manejo por rol (`ciudadano` / `autoridad`).
+- Creación de reportes con categoría, descripción, imagen y coordenadas en mapa.
+- Visualización y seguimiento de reportes en lista/mapa.
+- Priorización comunitaria mediante votos.
+- Flujo de estados operativo: `nuevo` → `en_revision` → `en_proceso` → `resuelto`.
 
 ---
 
-## 2) Enfoque de desarrollo
+## Requisitos
 
-- **Frontend:** React + TypeScript
-- **Estrategia UX:** Mobile first (pantallas pequeñas como base y escalado progresivo a tablet/desktop)
-- **Desarrollo incremental:** MVP primero, luego mejoras por fases
-
----
-
-## 3) Alcance MVP (primera versión)
-
-1. Registro/inicio de sesión de usuarios.
-2. Crear reporte con:
-   - categoría (bache, luminaria, basura, vandalismo),
-   - descripción,
-   - foto,
-   - ubicación (GPS o selección en mapa).
-3. Vista de reportes en mapa y lista.
-4. Votación/priorización comunitaria (por ejemplo, “me afecta” o “importante”).
-5. Estado del reporte (nuevo, en revisión, en proceso, resuelto).
+- Node.js 20+
+- npm 10+
+- Proyecto de Supabase con Auth, DB y Storage
 
 ---
 
-## 4) Stack técnico recomendado
+## Instalación
 
-## Frontend
-- **React 18+**
-- **TypeScript**
-- **Vite** (build rápido y simple para SPA)
-- **React Router DOM** (navegación)
-- **Tailwind CSS** (estilos rápidos y enfoque mobile first)
-- **React Hook Form + Zod** (formularios y validación)
-- **TanStack Query (React Query)** (manejo de estado servidor/cache)
-- **Axios** o `fetch` (consumo API)
-- **Leaflet + React-Leaflet** (mapa)
-
-## Backend (opciones sugeridas)
-- **Opción A (rápida): Supabase**
-  - Auth, PostgreSQL, Storage para imágenes, Realtime.
-- **Opción B (control total): Node.js + Express/Nest + PostgreSQL**
-  - + almacenamiento de imágenes en Cloudinary/S3.
-
-> Para arrancar rápido y validar el MVP, se recomienda **Supabase**.
-
----
-
-## 5) Paquetes de terceros (frontend)
-
-### Base
-- `react`
-- `react-dom`
-- `typescript`
-- `vite`
-- `@vitejs/plugin-react`
-
-### Navegación y estado
-- `react-router-dom`
-- `@tanstack/react-query`
-
-### Formularios y validación
-- `react-hook-form`
-- `zod`
-- `@hookform/resolvers`
-
-### Mapa y geolocalización
-- `leaflet`
-- `react-leaflet`
-
-### UI y utilidades
-- `tailwindcss`
-- `postcss`
-- `autoprefixer`
-- `clsx`
-- `date-fns`
-
-### Backend as a Service (si usamos Supabase)
-- `@supabase/supabase-js`
-
-### Calidad de código
-- `eslint`
-- `@typescript-eslint/eslint-plugin`
-- `@typescript-eslint/parser`
-- `prettier`
-- `eslint-config-prettier`
-- `eslint-plugin-react-hooks`
-
-### Testing
-- `vitest`
-- `@testing-library/react`
-- `@testing-library/jest-dom`
-- `@testing-library/user-event`
-- `jsdom`
-
----
-
-## 6) Capacidades técnicas clave del producto
-
-- Captura/subida de imágenes de incidencias.
-- Geolocalización por GPS del dispositivo.
-- Selección y visualización de puntos en mapa.
-- Feed/listado de reportes cercanos.
-- Priorización por interacción ciudadana.
-- Estados de seguimiento por parte de autoridades/moderadores.
-- Notificaciones (fase posterior: push/web push/email).
-
----
-
-## 7) Arquitectura inicial sugerida
-
-### Frontend (SPA)
-- Autenticación
-- Módulo de creación de reporte
-- Módulo de mapa/listado
-- Módulo de detalle y estado del reporte
-- Panel básico de administración (fase 2)
-
-### Datos principales
-- `users`
-- `reports`
-- `report_images`
-- `report_votes`
-- `report_status_history`
-
----
-
-## 8) Estructura de carpetas recomendada (frontend)
+1. Clonar el repositorio.
+2. Instalar dependencias:
 
 ```bash
-src/
-  app/
-    router/
-    providers/
-  features/
-    auth/
-    reports/
-    map/
-    profile/
-  shared/
-    components/
-    hooks/
-    lib/
-    types/
-    utils/
-  assets/
-  styles/
+npm install
+```
+
+3. Crear archivo de entorno local:
+
+```bash
+cp .env.example .env.local
+```
+
+En Windows PowerShell, puedes usar:
+
+```powershell
+Copy-Item .env.example .env.local
 ```
 
 ---
 
-## 9) Requisitos de entorno
+## Variables de entorno
 
-- **Node.js**: 20 LTS o superior
-- **npm**: 10+ (o pnpm/yarn)
-- **Git**
-- Cuenta en **Supabase** (si elegimos opción BaaS)
-
-Variables de entorno esperadas (ejemplo):
+Completa `.env.local` con:
 
 ```env
 VITE_SUPABASE_URL=
 VITE_SUPABASE_PUBLISHABLE_KEY=
-VITE_MAP_TILE_URL=
+VITE_MAP_TILE_URL=https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png
 ```
 
-### Setup inicial Supabase (Fase 4 · Paso 1)
-
-1. Copiar `.env.example` a `.env.local`.
-2. Completar `VITE_SUPABASE_URL` y `VITE_SUPABASE_PUBLISHABLE_KEY` desde tu proyecto Supabase.
-3. El cliente queda disponible en `src/shared/lib/supabase.ts`.
-4. El helper `src/shared/lib/env.ts` valida que las variables requeridas existan.
-
-### Requisitos para imágenes (Fase 4 · Paso 4)
-
-- Bucket de Storage: `report-images`.
-- Tabla recomendada: `report_images` con columnas mínimas:
-  - `report_id` (uuid),
-  - `user_id` (uuid, opcional),
-  - `storage_path` (text),
-  - `public_url` (text),
-  - `created_at` (timestamptz default now()).
-
-### Funciones por rol (Fase 4 · Paso 6)
-
-**Ciudadano**
-- Registrarse e iniciar/cerrar sesión.
-- Crear reportes.
-- Subir imágenes del reporte.
-- Votar/priorizar reportes.
-- Ver mapa, lista, estados y métricas públicas.
-
-**Autoridad**
-- Todo lo de ciudadano.
-- Cambiar estado de reportes (`nuevo`, `en_revision`, `en_proceso`, `resuelto`).
-- Gestionar flujo operativo de atención.
-- Consultar y priorizar zonas críticas para intervención.
+Notas:
+- `VITE_SUPABASE_URL` y `VITE_SUPABASE_PUBLISHABLE_KEY` son obligatorias.
+- `VITE_MAP_TILE_URL` define el proveedor de tiles del mapa.
 
 ---
 
-## 10) Roadmap por fases
+## Ejecución local
 
-### Fase 0 — Base técnica ✅ COMPLETADA
-- Inicializar proyecto React + TypeScript + Vite.
-- Configurar Tailwind, ESLint, Prettier.
-- Definir layout mobile first.
+Iniciar modo desarrollo:
 
-### Fase 1 — MVP funcional ✅ COMPLETADA
-- Auth básica.
-- Alta de reportes con foto + ubicación.
-- Visualización en mapa/listado.
-- Estados iniciales del reporte.
+```bash
+npm run dev
+```
 
-### Fase 2 — Comunidad y priorización ✅ COMPLETADA
-- Votación/priorización ciudadana.
-- Filtros por categoría/estado/distancia.
-- Mejora de UX para autoridades.
+Build de producción:
 
-### Fase 3 — Escalado ✅ COMPLETADA
-- Notificaciones.
-- Métricas de zonas críticas.
-- PWA/offline parcial.
+```bash
+npm run build
+```
 
-### Fase 4 — Integración Supabase ✅ COMPLETADA
-- Configurar proyecto Supabase y variables de entorno (`VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`).
-- Implementar autenticación real (registro, inicio de sesión y cierre de sesión).
-- Migrar datos mock de reportes a tablas reales (`reports`, `report_votes`, `report_status_history`).
-- Integrar subida de imágenes en Supabase Storage.
-- Habilitar sincronización en tiempo real de cambios de estado y votos.
-- Definir políticas RLS para seguridad de acceso por rol (ciudadano/autoridad).
+Previsualizar build:
 
-### Fase 5 — Testing y Coverage ✅ COMPLETADA
-- Definir estrategia de pruebas (unitarias, integración y UI crítica).
-- Implementar tests para módulos clave: auth, reportes, votación y cambios de estado.
-- Configurar reporte de coverage con Vitest.
-- Establecer umbrales mínimos de cobertura (líneas, funciones, ramas y statements).
-- Integrar pruebas y coverage en flujo de CI/CD. (`.github/workflows/ci.yml`)
-- Documentar comandos y criterios de calidad de pruebas en el README. 
-
-### Fase 6 — Limpieza de interfaz ✅ COMPLETADA
-- Consolidar la interfaz final para uso ciudadano y de autoridades con enfoque mobile first.
-- Eliminar trazas de debug visibles en UI (`console` expuesto, placeholders técnicos, etiquetas temporales).
-- Retirar comentarios de apoyo visual incrustados en componentes (textos tipo “TODO”, “debug”, “test”).
-- Homogeneizar textos finales de botones, estados y mensajes para experiencia de producto.
-- Revisar vistas clave (`Auth`, `Reportes`, `Mapa`, `Detalle`) para asegurar acabado de interfaz sin artefactos de desarrollo.
-
-**Criterios de salida Fase 6**
-- Ninguna pantalla productiva muestra información de depuración.
-- No existen mensajes/comentarios temporales visibles para el usuario final.
-- La navegación principal y acciones críticas mantienen consistencia visual y textual.
-- Se validan manualmente los flujos principales en móvil y desktop.
-
-### Fase 7 — Implementación UI según Figma 🚧 EN PROGRESO
-**Paso 1 — Extraer Design Tokens de Figma**
-- Definir paleta (primario, secundarios, fondo, texto, éxito, warning, error).
-- Definir tipografías, tamaños, pesos, radios, bordes, sombras y espaciados.
-- Documentar tokens en una tabla base antes de tocar componentes.
-- Referencia de implementación actual: la configuración de colores/tokens está en `src/index.css` dentro de `:root`.
-
-**Paso 2 — Configurar colores/tokens en Tailwind**
-- Como el proyecto usa `@import 'tailwindcss'` en `src/index.css` (sin `tailwind.config`), declarar tokens CSS en `:root` (por ejemplo `--color-primary`, `--color-bg`, etc.) y usarlos con utilidades arbitrarias (`bg-[var(--color-primary)]`, `text-[var(--color-text)]`).
-- Si luego se agrega `tailwind.config`, mapear la misma paleta en `theme.extend.colors` para usar clases semánticas (`bg-brand-primary`, `text-brand-muted`).
-- Evitar colores hardcodeados nuevos fuera del sistema de tokens.
-
-**Paso 3 — Base global de UI**
-- Ajustar `src/index.css` con variables globales, tipografía base y color de fondo principal.
-- Unificar estilos de foco (`focus-visible`), estados disabled y contraste mínimo.
-
-**Paso 4 — Implementar Auth según Figma**
-- Replicar layout mobile (hero, título, formulario, CTA principal y enlaces secundarios).
-- Mantener reglas funcionales de sesión (login, registro, logout y estado de sesión activa).
-- Validar que `/` muestre autenticación cuando no existe sesión.
-
-**Paso 5 — Aplicar diseño a Reportes (lista/mapa/detalle)**
-- Migrar tarjetas, filtros, badges de estado y botones al nuevo sistema visual.
-- Mantener restricciones por rol (`ciudadano` vs `autoridad`) sin cambios de lógica.
-
-**Paso 6 — Estados de UI consistentes**
-- Normalizar vistas de `loading`, `empty`, `error` y `success` en pantallas principales.
-- Alinear notificaciones y mensajes de feedback al tono visual de Figma.
-
-**Paso 7 — QA visual y regresión funcional**
-- Checklist visual por pantalla contra Figma (spacing, color, tipografía, jerarquía).
-- Pruebas mínimas: `npm run test -- src/features/auth/AuthPage.test.tsx` y `npm run test -- src/features/reports/ReportsOverviewPage.test.tsx`.
-- Validación responsive en móvil y desktop antes de marcar cierre de fase.
-
-**Criterios de salida Fase 7**
-- Pantallas principales alineadas visualmente con Figma.
-- Estados de UI (vacío, carga, error, éxito) con estilo consistente.
-- Navegación y acciones críticas conservan usabilidad y accesibilidad básica.
-- No hay regresiones funcionales en pruebas de auth y reportes.
-
-### Fase 5 · Paso 1 — Estrategia de pruebas (definición)
-
-**Objetivo inicial**
-- Validar flujos críticos del producto antes de ampliar cobertura global.
-- Reducir regresiones en autenticación, reportes y priorización comunitaria.
-
-**Pirámide de pruebas**
-- **Unitarias (base):** utilidades puras, validaciones de formularios, cálculos (distancia, métricas de zonas).
-- **Integración (prioridad):** hooks de reportes/auth con React Query y Supabase (mockeado), mutaciones y estados de carga/error.
-- **UI crítica (mínimas):** login/registro, creación de reporte, voto, cambio de estado.
-
-**Cobertura funcional prioritaria**
-- Auth: registro, login, logout, manejo de correo no confirmado.
-- Reportes: alta, listado, filtros, votación y transición de estados.
-- Datos: sincronización de cache y actualización en tiempo real.
-
-**Criterios de salida del Paso 1**
-- Estrategia documentada y aceptada.
-- Alcance de módulos críticos definido.
-- Convención de pruebas acordada (`*.test.ts` / `*.test.tsx`).
-- Lista de casos iniciales priorizados para implementación en el Paso 2.
-
-### Fase 5 · Paso 6 — Comandos y criterios de calidad (documentación)
-
-**Comandos de pruebas**
-- `npm run test`: ejecuta toda la suite de pruebas con Vitest.
-- `npm run test:watch`: ejecuta pruebas en modo watch durante desarrollo.
-- `npm run test:coverage`: ejecuta pruebas con coverage y genera reportes en `coverage/`.
-- `npm run lint`: validación estática obligatoria previa a PR.
-
-**Reportes de coverage**
-- Consola: resumen de `% Stmts`, `% Branch`, `% Funcs`, `% Lines`.
-- HTML: abrir `coverage/index.html` para revisar cobertura por archivo.
-
-**Umbrales mínimos definidos (Vitest)**
-- `lines >= 60`
-- `functions >= 60`
-- `statements >= 60`
-- `branches >= 50`
-
-**Criterios de calidad para PR/CI**
-- El pipeline de CI debe pasar en `.github/workflows/ci.yml`.
-- No se aceptan PR con `lint` o `test` fallando.
-- Si `test:coverage` falla por umbral o tests rojos, se corrige antes de merge.
-- Los tests críticos de auth/reportes deben incluir caso feliz y caso de error.
+```bash
+npm run preview
+```
 
 ---
 
-## 11) Criterios de calidad
+## Scripts útiles
 
-- Diseño **mobile first** real (no adaptado al final).
-- Accesibilidad básica (contraste, labels, foco, navegación táctil).
-- Tiempos de carga optimizados para red móvil.
-- Validaciones en cliente y servidor.
-- Manejo de errores y estados vacíos.
+- `npm run dev` → servidor de desarrollo.
+- `npm run build` → build de producción.
+- `npm run preview` → preview local del build.
+- `npm run lint` → validación estática.
+- `npm run test` → ejecución de tests.
+- `npm run test:watch` → tests en modo watch.
+- `npm run test:coverage` → tests + cobertura.
+- `npm run format` → formateo de código.
+- `npm run format:check` → validar formato.
 
 ---
 
-## 12) Flujo de la aplicación
+## Stack
 
-### Flujo principal (end-to-end)
+- Frontend: React + TypeScript + Vite
+- Routing: React Router
+- Estado servidor/cache: TanStack Query
+- Formularios: React Hook Form + Zod
+- Mapas: Leaflet + React-Leaflet
+- Backend/BaaS: Supabase
+- Estilos: Tailwind CSS
+- Testing: Vitest + Testing Library
 
-1. El usuario entra a la app y se autentica (registro o inicio de sesión).
-2. Crea un reporte con categoría, descripción, foto y ubicación.
-3. El reporte se publica con estado inicial `nuevo` y aparece en lista/mapa.
-4. La comunidad puede votar (`Me afecta +1`) para aumentar prioridad.
-5. Una autoridad toma el reporte y lo mueve por el flujo operativo.
-6. El reporte finaliza en `resuelto` y queda visible como histórico.
+---
 
-### Flujo ciudadano
+## Estructura principal
 
-1. **Acceso**: iniciar sesión o registrarse.
-2. **Crear reporte**: completar formulario, adjuntar foto y ubicación.
-3. **Seguimiento**: consultar estado actual en lista y mapa.
-4. **Priorizar**: votar reportes que le afectan (1 voto por usuario por reporte).
-5. **Notificaciones**: recibir confirmaciones y mensajes de éxito/error en acciones clave.
+```bash
+src/
+	app/
+	features/
+		auth/
+		reports/
+		map/
+		profile/
+	shared/
+```
 
-### Flujo autoridad
+---
 
-1. **Acceso**: iniciar sesión con rol `autoridad`.
-2. **Monitoreo**: revisar panel operativo (pendientes, en proceso, resueltos, alta prioridad).
-3. **Gestión**: actualizar estado del reporte según avance operativo.
-4. **Cierre**: marcar como `resuelto` cuando la incidencia fue atendida.
+## Documentación detallada
 
-### Ciclo de estados del reporte
+Para el detalle completo por tema:
 
-- `nuevo` → `en_revision` → `en_proceso` → `resuelto`
-
-Reglas funcionales:
-- Solo autoridad puede cambiar estado.
-- Ciudadano puede crear y votar, pero no cambiar estado.
-- Si un usuario ya votó un reporte, el botón de voto se desactiva.
-
-### Reglas de interfaz y navegación
-
-- Navegación principal: Inicio → Auth → Crear reporte / Ver reportes.
-- La interfaz oculta acciones operativas cuando el rol es `ciudadano`.
-- En cambio de sesión (ej. autoridad → ciudadano), la UI se re-renderiza y actualiza permisos visibles.
+1. [Producto, arquitectura y flujos](docs/readme/producto-arquitectura-y-flujos.md)
+2. [Tecnologías y paquetes](docs/readme/tecnologias-y-paquetes.md)
+3. [Entorno, setup y roles](docs/readme/entorno-setup-y-roles.md)
+4. [Roadmap, testing y calidad](docs/readme/roadmap-testing-y-calidad.md)
