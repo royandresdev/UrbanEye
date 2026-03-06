@@ -48,7 +48,7 @@ export function NotificationCenter() {
       </button>
 
       {isOpen ? (
-        <div className="absolute right-0 z-[1000] mt-2 w-80 max-w-[85vw] rounded-xl border border-slate-200 bg-white p-3 shadow-lg">
+        <div className="absolute right-0 z-50 mt-2 w-80 max-w-[85vw] rounded-xl border border-slate-200 bg-white p-3 shadow-lg">
           <div className="mb-2 flex items-center justify-between">
             <p className="text-sm font-medium text-slate-900">Centro de notificaciones</p>
             <button

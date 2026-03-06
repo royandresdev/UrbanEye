@@ -1,10 +1,11 @@
 import { FiBell, FiMenu } from "react-icons/fi"
 
-type CitizenPanelHeaderProps = {
+type ReportPanelHeaderProps = {
   onOpenSidebar?: () => void
+  roleUser: string;
 }
 
-export function CitizenPanelHeader({ onOpenSidebar }: CitizenPanelHeaderProps) {
+export function ReportPanelHeader({ onOpenSidebar, roleUser }: ReportPanelHeaderProps) {
   return (
     <header className="mb-5 flex items-center justify-between border-b border-field-border-secondary pb-3">
       <div className="flex items-center gap-3">
@@ -18,7 +19,7 @@ export function CitizenPanelHeader({ onOpenSidebar }: CitizenPanelHeaderProps) {
         </button>
         <div>
           <h1 className="text-lg font-semibold leading-tight">Panel de Gestión</h1>
-          <p className="text-xs text-fg-secondary">Portal de Ciudadano</p>
+          <p className="text-xs text-fg-secondary">Portal de {roleUser}</p>
         </div>
       </div>
       <button

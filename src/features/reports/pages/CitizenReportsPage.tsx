@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { CitizenPanelHeader } from '../components/CitizenPanelHeader'
+import { ReportPanelHeader } from '../components/ReportPanelHeader'
 import { CitizenStatsPanel } from '../components/CitizenStatsPanel'
 import { ReportsList } from '../components/ReportsList'
 import { ReportsMapPanel } from '../components/ReportsMapPanel'
@@ -30,11 +30,12 @@ export function CitizenReportsPage() {
   } = useReportsDashboardState()
 
   return (
-    <main className="mx-auto min-h-screen w-full max-w-md bg-base px-4 py-4 text-fg-primary">
-      <CitizenPanelHeader
+    <main className="mx-auto min-h-screen w-full max-w-md bg-base p-4 text-fg-primary">
+      <ReportPanelHeader
         onOpenSidebar={() => {
           setIsSidebarOpen(true)
         }}
+        roleUser="Ciudadano"
       />
 
       <CitizenStatsPanel
