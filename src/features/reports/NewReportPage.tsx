@@ -172,7 +172,6 @@ export function NewReportPage() {
             id="report-photo"
             type="file"
             accept="image/*"
-            capture="environment"
             {...register('photo')}
             className="sr-only"
           />
