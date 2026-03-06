@@ -33,13 +33,13 @@ vi.mock('../../shared/lib/supabase', () => ({
 }))
 
 describe('Auth redirect', () => {
-  it('redirecciona a /auth cuando se intenta entrar a /reports sin sesión', async () => {
+  it('redirecciona a /auth cuando se intenta entrar a / sin sesión', async () => {
     getSessionMock.mockResolvedValue({
       data: { session: null },
       error: null,
     })
 
-    window.history.pushState({}, '', '/reports')
+    window.history.pushState({}, '', '/')
 
     const { appRouter } = await import('./appRouter')
 

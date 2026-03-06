@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { type RegisterFormValues, registerSchema } from '../authSchemas'
@@ -11,6 +12,7 @@ type RegisterFormProps = {
 
 export function RegisterForm({ onRegistered }: RegisterFormProps) {
   const { addNotification } = useNotifications()
+  const [registrationHelpMessage, setRegistrationHelpMessage] = useState<string | null>(null)
   const {
     register,
     handleSubmit,
@@ -26,6 +28,8 @@ export function RegisterForm({ onRegistered }: RegisterFormProps) {
   })
 
   const onSubmit = async (values: RegisterFormValues) => {
+    setRegistrationHelpMessage(null)
+
     const { error } = await supabase.auth.signUp({
       email: values.email,
       password: values.password,
@@ -37,6 +41,15 @@ export function RegisterForm({ onRegistered }: RegisterFormProps) {
     })
 
     if (error) {
+      const maybeCode = (error as { code?: string }).code?.toLowerCase()
+      const message = error.message.toLowerCase()
+
+      if (maybeCode === 'email_address_invalid' || message.includes('email address') || message.includes('invalid')) {
+        setRegistrationHelpMessage(
+          'El correo ingresado no es aceptado por el servicio de autenticación. Usa un correo real y prueba con otro dominio (por ejemplo gmail.com u outlook.com).',
+        )
+      }
+
       addNotification({
         title: 'Error al registrarse',
         message: error.message,
@@ -98,6 +111,12 @@ export function RegisterForm({ onRegistered }: RegisterFormProps) {
       >
         Crear cuenta
       </button>
+
+      {registrationHelpMessage ? (
+        <div className="rounded-lg border border-amber-300 bg-amber-50 p-3">
+          <p className="text-xs text-amber-900">{registrationHelpMessage}</p>
+        </div>
+      ) : null}
     </form>
   )
 }

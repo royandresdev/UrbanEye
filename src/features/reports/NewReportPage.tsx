@@ -1,11 +1,11 @@
 import 'leaflet/dist/leaflet.css'
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useForm, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import type { IconType } from 'react-icons'
 import { CircleMarker, MapContainer, TileLayer, useMap, useMapEvents } from 'react-leaflet'
-import { FiArrowRight, FiCamera, FiCrosshair, FiMapPin, FiSun, FiTool, FiTrash2, FiX } from 'react-icons/fi'
+import { FiArrowRight, FiCamera, FiCrosshair, FiMapPin, FiSun, FiTool, FiTrash2 } from 'react-icons/fi'
 import { TbRoad } from 'react-icons/tb'
 import { useEffect } from 'react'
 import {
@@ -15,6 +15,7 @@ import {
 } from './reportSchemas'
 import { useCreateReport } from './useReports'
 import { useNotifications } from '../../shared/notifications/useNotifications'
+import NewReportPageHeader from './components/NewReportPageHeader'
 
 const categoryOptions = [
   { value: 'bache', label: 'Bache', icon: TbRoad },
@@ -131,19 +132,7 @@ export function NewReportPage() {
 
   return (
     <main className="mx-auto min-h-screen w-full max-w-md bg-base py-6 text-fg-primary">
-      <header className="mb-6 border-b border-field-border-secondary px-4 py-4">
-        <div className="flex items-center justify-between">
-          <Link
-            to="/reports"
-            className="inline-flex h-8 w-8 items-center justify-center rounded-md text-fg-primary transition hover:bg-field-bg-secondary"
-            aria-label="Volver"
-          >
-            <FiX className="h-6 w-6" />
-          </Link>
-          <h1 className="text-lg font-semibold">Crear Nuevo Reporte</h1>
-          <span className="h-8 w-8" aria-hidden />
-        </div>
-      </header>
+      <NewReportPageHeader />
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 px-4">
         <input type="hidden" {...register('category')} />
