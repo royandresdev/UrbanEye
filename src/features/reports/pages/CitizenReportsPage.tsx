@@ -7,6 +7,7 @@ import { ReportsMapPanel } from '../components/ReportsMapPanel'
 import { UserSidebar } from '../components/UserSidebar'
 import { categoryLabel, statusMarkerColor } from '../reportsUiConstants'
 import { useReportsDashboardState } from '../useReportsDashboardState'
+import { MdAddCircleOutline } from 'react-icons/md'
 
 export function CitizenReportsPage() {
   const [showCitizenMap, setShowCitizenMap] = useState(false)
@@ -43,7 +44,9 @@ export function CitizenReportsPage() {
       />
 
       <Link to="/reports/new" className="text-lg btn-primary mb-6 inline-flex w-full items-center justify-center gap-2">
-        <span aria-hidden>⊕</span>
+        <span aria-hidden>
+          <MdAddCircleOutline />
+        </span>
         Reportar Problema
       </Link>
 

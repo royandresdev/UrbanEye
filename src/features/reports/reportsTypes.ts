@@ -13,6 +13,7 @@ export type ReportItem = {
   longitude: number
   address: string
   votes: number
+  imageUrl?: string | null
   hasUserVoted?: boolean
   createdAt: string
 }

@@ -129,7 +129,15 @@ export function AuthorityReportsPage() {
                   <li key={report.id} className="rounded-2xl border border-field-border-secondary bg-field-bg-secondary p-3">
                     <div className="mb-3 flex items-start gap-3">
                       <div className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-brand-900 text-accent-500">
-                        <FiShield className="h-6 w-6" />
+                        {report.imageUrl ? (
+                          <img
+                            src={report.imageUrl}
+                            alt={`Imagen del reporte: ${report.description}`}
+                            className="h-full w-full object-cover"
+                          />
+                        ) : (
+                          <FiShield className="h-6 w-6" />
+                        )}
                       </div>
 
                       <div className="min-w-0 flex-1">

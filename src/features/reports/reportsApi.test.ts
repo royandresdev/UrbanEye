@@ -43,6 +43,7 @@ vi.mock('../../shared/lib/supabase', () => ({
 let reportsSelectResult: QueryResult
 let statusSelectResult: QueryResult
 let votesSelectResult: QueryResult
+let reportImagesSelectResult: QueryResult
 let insertReportResult: QueryResult
 let insertStatusResult: { error: { message: string } | null }
 let insertVoteResult: { error: { message: string } | null }
@@ -90,6 +91,7 @@ function setupFromMock() {
 
     if (table === 'report_images') {
       return {
+        select: vi.fn(() => Promise.resolve(reportImagesSelectResult)),
         insert: vi.fn((payload: unknown) => {
           reportImagesInsertMock(payload)
           return Promise.resolve(insertReportImageResult)
@@ -119,6 +121,7 @@ describe('reportsApi', () => {
     reportsSelectResult = { data: [], error: null }
     statusSelectResult = { data: [], error: null }
     votesSelectResult = { data: [], error: null }
+    reportImagesSelectResult = { data: [], error: null }
 
     insertReportResult = {
       data: {
@@ -195,6 +198,14 @@ describe('reportsApi', () => {
       error: null,
     }
 
+    reportImagesSelectResult = {
+      data: [
+        { report_id: 'r1', public_url: 'https://cdn.urbaneye/r1.jpg' },
+        { report_id: 'r2', public_url: 'https://cdn.urbaneye/r2.jpg' },
+      ],
+      error: null,
+    }
+
     const reports = await getReports()
 
     expect(reports).toEqual([
@@ -207,6 +218,7 @@ describe('reportsApi', () => {
         longitude: -99.1,
         address: 'Zona Centro',
         votes: 2,
+        imageUrl: 'https://cdn.urbaneye/r1.jpg',
         hasUserVoted: false,
         createdAt: '2026-03-01T12:00:00.000Z',
       },
@@ -219,6 +231,7 @@ describe('reportsApi', () => {
         longitude: -99.11,
         address: 'Zona Norte',
         votes: 1,
+        imageUrl: 'https://cdn.urbaneye/r2.jpg',
         hasUserVoted: false,
         createdAt: '2026-03-01T11:00:00.000Z',
       },
@@ -280,6 +293,7 @@ describe('reportsApi', () => {
       longitude: -99.1332,
       address: 'Lat 19.43260, Lng -99.13320',
       votes: 0,
+      imageUrl: 'https://cdn.urbaneye/report-1/photo.jpg',
       hasUserVoted: false,
       createdAt: '2026-03-01T10:00:00.000Z',
     })
@@ -313,6 +327,11 @@ describe('reportsApi', () => {
       error: null,
     }
 
+    reportImagesSelectResult = {
+      data: [{ report_id: 'r1', public_url: 'https://cdn.urbaneye/r1.jpg' }],
+      error: null,
+    }
+
     const updatedReport = await voteReport({ reportId: 'r1' })
 
     expect(voteInsertMock).toHaveBeenCalledWith({
@@ -329,6 +348,7 @@ describe('reportsApi', () => {
       longitude: -99.12,
       address: 'Parque Sur',
       votes: 3,
+      imageUrl: 'https://cdn.urbaneye/r1.jpg',
       hasUserVoted: false,
       createdAt: '2026-03-01T12:00:00.000Z',
     })
@@ -338,6 +358,7 @@ describe('reportsApi', () => {
     reportsSelectResult = { data: [], error: null }
     statusSelectResult = { data: [], error: null }
     votesSelectResult = { data: [], error: null }
+    reportImagesSelectResult = { data: [], error: null }
 
     await expect(
       updateReportStatus({
