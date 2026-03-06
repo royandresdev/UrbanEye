@@ -127,7 +127,7 @@ export function NewReportPage() {
       level: 'success',
     })
 
-    navigate('/reports')
+    navigate('/')
   }
 
   return (
