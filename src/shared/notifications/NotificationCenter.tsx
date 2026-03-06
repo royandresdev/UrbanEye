@@ -97,11 +97,11 @@ export function NotificationCenter() {
           </div>
 
           {sortedNotifications.length === 0 ? (
-            <p className="text-sm text-fg-secondary">Sin notificaciones por ahora.</p>
+            <p className="border-t bg-field-bg-secondary border-field-border-secondary p-3 text-sm text-fg-secondary">Sin notificaciones por ahora.</p>
           ) : (
             <ul className="max-h-72 space-y-1 overflow-y-auto">
               {sortedNotifications.map((notification) => (
-                <li key={notification.id} className="border bg-field-bg-secondary border-field-border-secondary p-3">
+                <li key={notification.id} className="border-t bg-field-bg-secondary border-field-border-secondary p-3">
                   <div className="mb-1 flex items-center justify-between gap-2">
                     <p className="text-sm font-medium text-fg-primary">{notification.title}</p>
                     <span
