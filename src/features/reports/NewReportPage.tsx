@@ -24,8 +24,8 @@ const categoryOptions = [
   { value: 'vandalismo', label: 'Vandalismo', icon: FiTool },
 ] as const
 
-const DEFAULT_LATITUDE = 19.432608
-const DEFAULT_LONGITUDE = -99.133209
+const DEFAULT_LATITUDE = -12.046374
+const DEFAULT_LONGITUDE = -77.042793
 
 export function NewReportPage() {
   const [geoError, setGeoError] = useState<string | null>(null)
